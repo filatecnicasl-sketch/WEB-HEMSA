@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hemsa-frontend
+    name: hemsa-web-prueba
     runtime: docker
     plan: free
     healthCheckPath: /api/health
