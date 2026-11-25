@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import html
 import json
 import mimetypes
 import os
@@ -15,6 +16,7 @@ import sys
 import threading
 import time
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from email.message import EmailMessage
 from email.parser import BytesParser
 from email.policy import default
@@ -327,12 +329,12 @@ def graph_access_token(settings: dict) -> str:
     return token
 
 
-def deliver_email_graph(settings: dict, subject: str, body: str, reply_to: str, reference: str):
+def deliver_email_graph(settings: dict, to: str, subject: str, html_body: str, reply_to: str, reference: str):
     message = {
         "message": {
             "subject": subject,
-            "body": {"contentType": "Text", "content": body},
-            "toRecipients": [{"emailAddress": {"address": settings["recipient"]}}],
+            "body": {"contentType": "HTML", "content": html_body},
+            "toRecipients": [{"emailAddress": {"address": to}}],
             "replyTo": [{"emailAddress": {"address": reply_to}}],
             "internetMessageHeaders": [{"name": "X-HEMSA-Reference", "value": reference}],
         },
@@ -354,20 +356,21 @@ def deliver_email_graph(settings: dict, subject: str, body: str, reply_to: str, 
         fail(502, "MAIL_DELIVERY_FAILED", "No hemos podido enviar el mensaje. Inténtalo más tarde o contacta con HEMSA por teléfono")
 
 
-def deliver_email(subject: str, body: str, reply_to: str, reference: str):
-    settings = mail_settings()
+def send_email(settings: dict, to: str, subject: str, text_body: str, html_body: str, reply_to: str, reference: str):
+    """Envía un mensaje por el método configurado. Lanza ApiError 502 si no se entrega."""
     if settings["method"] == "graph":
-        deliver_email_graph(settings, subject, body, reply_to, reference)
+        deliver_email_graph(settings, to, subject, html_body, reply_to, reference)
         return
     message = EmailMessage()
     message["From"] = settings["sender"]
-    message["To"] = settings["recipient"]
+    message["To"] = to
     message["Reply-To"] = reply_to
     message["Subject"] = subject
     message["Date"] = formatdate(localtime=True)
     message["Message-ID"] = make_msgid("hemsa-web")
     message["X-HEMSA-Reference"] = reference
-    message.set_content(body, subtype="plain", charset="utf-8")
+    message.set_content(text_body, subtype="plain", charset="utf-8")
+    message.add_alternative(html_body, subtype="html", charset="utf-8")
     try:
         if settings["security"] == "ssl":
             smtp = smtplib.SMTP_SSL(settings["host"], settings["port"], timeout=20, context=ssl.create_default_context())
@@ -382,6 +385,150 @@ def deliver_email(subject: str, body: str, reply_to: str, reference: str):
     except (smtplib.SMTPException, OSError) as error:
         print(f"Error de envío SMTP: {type(error).__name__}", file=sys.stderr)
         fail(502, "MAIL_DELIVERY_FAILED", "No hemos podido enviar el mensaje. Inténtalo más tarde o contacta con HEMSA por teléfono")
+
+
+MADRID_TZ = ZoneInfo("Europe/Madrid")
+
+
+def esc(value: str) -> str:
+    return html.escape(value, quote=True)
+
+
+def email_frame(reference: str, kicker: str, title: str, inner_html: str, intro: str = "") -> str:
+    """Estructura común de los correos oficiales de la web, con cabecera de registro."""
+    stamp = datetime.now(MADRID_TZ).strftime("%d/%m/%Y · %H:%M")
+    intro_html = f'<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#3b534d;">{intro}</p>' if intro else ""
+    return f"""<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f2f5f4;">
+<div style="padding:28px 12px;font-family:Arial,Helvetica,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #dbe4e0;border-radius:12px;overflow:hidden;">
+  <tr><td style="background:#0f3d2e;padding:20px 28px;">
+    <span style="color:#ffffff;font-size:19px;font-weight:bold;letter-spacing:3px;">HEMSA</span>
+    <span style="color:#bfe0d3;font-size:13px;">&nbsp;&nbsp;San Fernando · Servicios Públicos Municipales</span>
+  </td></tr>
+  <tr><td style="padding:26px 28px 6px;">
+    <div style="font-size:11px;font-weight:bold;letter-spacing:2px;color:#007c5e;">{kicker}</div>
+    <div style="margin-top:5px;font-size:21px;font-weight:bold;color:#173b30;">{title}</div>
+  </td></tr>
+  <tr><td style="padding:16px 28px 4px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef5f1;border:1px solid #cfe2d8;border-radius:9px;">
+      <tr>
+        <td style="padding:15px 18px;">
+          <div style="font-size:10px;letter-spacing:1.5px;color:#5b6e67;">N.º DE REGISTRO DE ENTRADA</div>
+          <div style="margin-top:3px;font-size:20px;font-weight:bold;color:#0f3d2e;">{reference}</div>
+        </td>
+        <td style="padding:15px 18px;text-align:right;vertical-align:top;">
+          <div style="font-size:10px;letter-spacing:1.5px;color:#5b6e67;">FECHA Y HORA DE ENTRADA</div>
+          <div style="margin-top:3px;font-size:13px;font-weight:bold;color:#0f3d2e;">{stamp}</div>
+          <div style="font-size:10px;color:#5b6e67;">(hora peninsular)</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+  <tr><td style="padding:18px 28px 6px;">{intro_html}{inner_html}</td></tr>
+  <tr><td style="padding:20px 28px 26px;">
+    <div style="border-top:1px solid #e3ece8;padding-top:14px;font-size:11px;line-height:1.7;color:#7a8c85;">
+      Mensaje generado automáticamente desde www.hemsasanfernando.es.<br>
+      Indique siempre el número de registro <strong>{reference}</strong> en cualquier consulta sobre esta entrada.
+    </div>
+  </td></tr>
+</table>
+<div style="max-width:640px;margin:12px auto 0;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:10px;color:#93a69f;">
+  HEMSA · Empresa Municipal de San Fernando · Este correo contiene información confidencial destinada únicamente a su destinatario.
+</div>
+</div>
+</body>
+</html>"""
+
+
+def email_rows_html(rows: list[tuple[str, str]]) -> str:
+    body = "".join(
+        f'<tr>'
+        f'<td style="padding:10px 0;border-bottom:1px solid #e3ece8;font-size:10px;letter-spacing:1px;color:#5b6e67;width:150px;vertical-align:top;">{esc(label).upper()}</td>'
+        f'<td style="padding:10px 0 10px 14px;border-bottom:1px solid #e3ece8;font-size:14px;line-height:1.5;color:#173b30;">{esc(value)}</td>'
+        f'</tr>'
+        for label, value in rows
+    )
+    return f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">{body}</table>'
+
+
+def email_message_html(label: str, content: str) -> str:
+    return (
+        f'<div style="margin-top:18px;font-size:10px;letter-spacing:1px;color:#5b6e67;">{esc(label).upper()}</div>'
+        f'<div style="margin-top:6px;padding:14px 16px;background:#f7faf9;border:1px solid #e3ece8;border-radius:8px;'
+        f'font-size:14px;line-height:1.65;color:#173b30;white-space:pre-wrap;">{esc(content)}</div>'
+    )
+
+
+def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone: str, topic: str, details: str):
+    """Entrega la entrada en el buzón de HEMSA y envía el acuse de recibo a la ciudadanía."""
+    settings = mail_settings()
+    contact = kind == "contact"
+    heading = "Formulario de contacto web" if contact else "Solicitud de cita previa web"
+    subject = f"[Registro {reference}] {topic} — {name}"
+    rows = [
+        ("Nombre y apellidos", name),
+        ("Correo electrónico", email),
+        ("Teléfono", phone or "No indicado"),
+        ("Asunto" if contact else "Motivo de la cita", topic),
+    ]
+    text_body = (
+        f"REGISTRO DE ENTRADA — {heading.upper()}\n"
+        f"N.º de registro: {reference}\n"
+        f"Fecha de entrada: {datetime.now(MADRID_TZ).strftime('%d/%m/%Y %H:%M')} (hora peninsular)\n\n"
+        + "\n".join(f"{label}: {value}" for label, value in rows)
+        + f"\n\nDetalle:\n{details}\n"
+    )
+    html_body = email_frame(
+        reference, "REGISTRO DE ENTRADA", heading,
+        email_rows_html(rows) + email_message_html("Detalle", details),
+    )
+    send_email(settings, settings["recipient"], subject, text_body, html_body, email, reference)
+
+    receipt_rows = [("Su nombre", name), ("Asunto" if contact else "Motivo de la cita", topic)]
+    appointment_note = "" if contact else (
+        "\n\nImportante: la cita NO queda confirmada con este acuse. "
+        "HEMSA se pondrá en contacto con usted para confirmar día y hora."
+    )
+    receipt_text = (
+        f"Hemos recibido correctamente su solicitud a través de la web de HEMSA.\n\n"
+        f"N.º de registro de entrada: {reference}\n"
+        + "\n".join(f"{label}: {value}" for label, value in receipt_rows)
+        + f"\n\nConserve este número: le servirá para cualquier consulta sobre esta solicitud.{appointment_note}\n\n"
+        "HEMSA · San Fernando — www.hemsasanfernando.es\n"
+        "Este es un mensaje automático; por favor, no responda a este correo."
+    )
+    receipt_html = email_frame(
+        reference, "ACUSE DE RECIBO", "Hemos recibido su solicitud",
+        email_rows_html(receipt_rows)
+        + ("" if contact else email_message_html(
+            "Importante",
+            "La cita NO queda confirmada con este acuse. HEMSA se pondrá en contacto con usted para confirmar día y hora.")),
+        intro=(
+            f"Gracias por contactar con HEMSA. Su solicitud ha quedado registrada con el número "
+            f"<strong>{reference}</strong>. Consérvelo para cualquier consulta. "
+            "Este es un mensaje automático; no es necesario responder."
+        ),
+    )
+    try:
+        send_email(settings, email, f"HEMSA · Acuse de recibo {reference}", receipt_text, receipt_html, settings["recipient"], reference)
+    except ApiError:
+        print("No se pudo enviar el acuse de recibo a la ciudadanía", file=sys.stderr)
+
+
+def next_reference(db, kind: str) -> str:
+    """Número correlativo de registro de entrada: E/2026/000042 o C/2026/000042."""
+    prefix = "E" if kind == "contact" else "C"
+    year = datetime.now(MADRID_TZ).year
+    db.execute(
+        "INSERT INTO registry_counters(kind,year,counter) VALUES(?,?,1) "
+        "ON CONFLICT(kind,year) DO UPDATE SET counter=counter+1",
+        (prefix, year),
+    )
+    counter = db.execute("SELECT counter FROM registry_counters WHERE kind=? AND year=?", (prefix, year)).fetchone()["counter"]
+    return f"{prefix}/{year}/{counter:06d}"
 
 
 class Store:
@@ -409,6 +556,8 @@ class Store:
                 CREATE TABLE IF NOT EXISTS editorial (type TEXT NOT NULL, id TEXT NOT NULL, version INTEGER NOT NULL, status TEXT NOT NULL, draft TEXT NOT NULL, published TEXT, has_changes INTEGER NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, first_published_at TEXT, last_published_at TEXT, archived_at TEXT, PRIMARY KEY(type,id));
                 CREATE TABLE IF NOT EXISTS revisions (id TEXT PRIMARY KEY, type TEXT NOT NULL, owner_id TEXT NOT NULL, action TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL, created_by INTEGER NOT NULL REFERENCES admins(id));
                 CREATE TABLE IF NOT EXISTS documents (id TEXT PRIMARY KEY, owner_type TEXT NOT NULL, owner_id TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, pages INTEGER, bytes INTEGER NOT NULL, kind TEXT NOT NULL, source TEXT NOT NULL, url TEXT NOT NULL, data BLOB NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS registry_counters (kind TEXT NOT NULL, year INTEGER NOT NULL, counter INTEGER NOT NULL, PRIMARY KEY(kind, year));
+                CREATE TABLE IF NOT EXISTS form_entries (reference TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT NOT NULL, topic TEXT NOT NULL, details TEXT NOT NULL, created_at TEXT NOT NULL);
                 CREATE INDEX IF NOT EXISTS idx_revisions_owner ON revisions(type,owner_id,created_at);
                 CREATE INDEX IF NOT EXISTS idx_documents_owner ON documents(owner_type,owner_id);
             """)
@@ -857,15 +1006,25 @@ class Handler(BaseHTTPRequestHandler):
             FORM_ATTEMPTS[key] = attempts
         settings = mail_settings()
         reference = f"TEST-{secrets.token_hex(4).upper()}"
-        body = (
+        method_line = (
+            "Método de envío: Microsoft Graph (API de Microsoft 365)"
+            if settings["method"] == "graph"
+            else f"Método de envío: SMTP {settings['host']}:{settings['port']} ({settings['security']})"
+        )
+        text_body = (
             "Prueba de envío del correo de la web de HEMSA\n"
             f"Referencia: {reference}\n\n"
             "Si recibes este mensaje, la configuración del buzón es correcta y los formularios "
             "de contacto y cita previa ya pueden enviar correos.\n\n"
-            f"Servidor: {settings['host']}:{settings['port']} ({settings['security']})\n"
+            f"{method_line}\n"
             f"Remitente: {settings['sender']}"
         )
-        deliver_email(f"[Web HEMSA] Prueba de correo — {reference}", body, settings["sender"], reference)
+        html_body = email_frame(
+            reference, "PRUEBA DE CONFIGURACIÓN", "El correo de la web funciona",
+            email_rows_html([("Remitente", settings["sender"]), ("Destinatario", settings["recipient"]), ("Método", "Microsoft Graph" if settings["method"] == "graph" else f"SMTP · {settings['host']}:{settings['port']} ({settings['security']})")]),
+            intro="Si estás leyendo este mensaje, la configuración del buzón es correcta y los formularios de contacto y cita previa ya pueden entregar correos.",
+        )
+        send_email(settings, settings["recipient"], f"[Web HEMSA] Prueba de correo — {reference}", text_body, html_body, settings["sender"], reference)
         return 200, {"ok": True, "recipient": settings["recipient"], "reference": reference}
 
     def login(self):
@@ -1066,20 +1225,16 @@ class Handler(BaseHTTPRequestHandler):
             fail(400, "VALIDATION_ERROR", "Introduce un teléfono válido", {"phone": "Teléfono no válido"})
         if payload["privacy"] is not True:
             fail(400, "VALIDATION_ERROR", "Debes aceptar la política de privacidad", {"privacy": "Consentimiento obligatorio"})
-        reference = f"{'CON' if contact else 'CIT'}-{secrets.token_hex(4).upper()}"
         if contact:
-            subject = text(payload["subject"], "subject", 1, 80)
+            topic = text(payload["subject"], "subject", 1, 80)
             allowed = {"Información general", "Vivienda y promociones", "Ayuda a domicilio", "Garajes, locales y parcelas", "Empleo y convocatorias", "Quejas y sugerencias"}
-            if subject not in allowed:
+            if topic not in allowed:
                 fail(400, "VALIDATION_ERROR", "Selecciona un asunto válido", {"subject": "Asunto no válido"})
-            message = text(payload["message"], "message", 10, 4000)
-            heading = "Nuevo mensaje desde el formulario de contacto"
-            details = f"Asunto: {subject}\n\nMensaje:\n{message}"
-            mail_subject = f"[Web HEMSA] {subject} — {name}"
+            details = text(payload["message"], "message", 10, 4000)
         else:
-            service = text(payload["service"], "service", 1, 100)
+            topic = text(payload["service"], "service", 1, 100)
             allowed = {"Información general", "Vivienda y registro de demandantes", "Servicio de Ayuda a Domicilio", "Venta de mi vivienda", "Garajes y trasteros", "Locales y parcelas", "Empleo y convocatorias", "Transparencia y documentación"}
-            if service not in allowed:
+            if topic not in allowed:
                 fail(400, "VALIDATION_ERROR", "Selecciona un motivo válido", {"service": "Motivo no válido"})
             preferred_date = text(payload["date"], "date", 0, 10)
             if preferred_date:
@@ -1087,9 +1242,7 @@ class Handler(BaseHTTPRequestHandler):
                 if datetime.strptime(preferred_date, "%Y-%m-%d").date() < datetime.now().astimezone().date():
                     fail(400, "VALIDATION_ERROR", "La fecha preferida no puede ser anterior a hoy", {"date": "Fecha no válida"})
             notes = text(payload["notes"], "notes", 0, 2000)
-            heading = "Nueva solicitud de cita previa"
-            details = f"Motivo: {service}\nFecha preferida: {preferred_date or 'Sin preferencia'}\n\nComentario:\n{notes or 'Sin comentarios'}\n\nLa cita no quedará confirmada hasta recibir respuesta de HEMSA."
-            mail_subject = f"[Cita previa] {service} — {name}"
+            details = f"Fecha preferida: {preferred_date or 'Sin preferencia'}\n\nComentario:\n{notes or 'Sin comentarios'}"
         key = f"{self.client_address[0]}|{kind}"
         current = time.time()
         with LOCK:
@@ -1098,8 +1251,13 @@ class Handler(BaseHTTPRequestHandler):
                 fail(429, "TOO_MANY_REQUESTS", "Se han realizado demasiados envíos. Espera unos minutos antes de volver a intentarlo")
             attempts.append(current)
             FORM_ATTEMPTS[key] = attempts
-        body = f"{heading}\nReferencia: {reference}\n\nNombre: {name}\nCorreo: {email}\nTeléfono: {phone or 'No indicado'}\n{details}"
-        deliver_email(mail_subject, body, email, reference)
+        with LOCK, STORE.connect() as db:
+            reference = next_reference(db, kind)
+            db.execute(
+                "INSERT INTO form_entries(reference,kind,name,email,phone,topic,details,created_at) VALUES(?,?,?,?,?,?,?,?)",
+                (reference, kind, name, email, phone, topic, details, NOW()),
+            )
+        deliver_form_emails(kind, reference, name, email, phone, topic, details)
         return 201, {"ok": True, "reference": reference}
 
     def route(self, method, path):

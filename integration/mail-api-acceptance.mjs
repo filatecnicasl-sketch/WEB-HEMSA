@@ -88,10 +88,9 @@ async function main() {
     method: 'POST', auth: true,
     body: saveBody(settings, { method: 'graph', enabled: true, tenantId: '', clientId: '' }),
   });
-  check('Graph activado exige tenant, client y secreto', incompleteGraph.status === 400
+  check('Graph activado exige tenant y client', incompleteGraph.status === 400
     && Boolean(incompleteGraph.data?.error?.fields?.tenantId)
-    && Boolean(incompleteGraph.data?.error?.fields?.clientId)
-    && Boolean(incompleteGraph.data?.error?.fields?.clientSecret));
+    && Boolean(incompleteGraph.data?.error?.fields?.clientId));
 
   const kept = await request('/api/admin/mail-settings', {
     method: 'POST', auth: true, body: saveBody(settings),
