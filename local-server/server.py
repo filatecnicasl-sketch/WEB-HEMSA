@@ -405,7 +405,7 @@ def email_frame(reference: str, kicker: str, title: str, inner_html: str, intro:
 <div style="padding:28px 12px;font-family:Arial,Helvetica,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #dbe4e0;border-radius:12px;overflow:hidden;">
   <tr><td style="background:#0f3d2e;padding:20px 28px;">
-    <span style="color:#ffffff;font-size:19px;font-weight:bold;letter-spacing:3px;">HEMSA</span>
+    <span style="color:#ffffff;font-size:19px;font-weight:bold;letter-spacing:3px;">WEB HEMSA</span>
     <span style="color:#bfe0d3;font-size:13px;">&nbsp;&nbsp;San Fernando · Servicios Públicos Municipales</span>
   </td></tr>
   <tr><td style="padding:26px 28px 6px;">
