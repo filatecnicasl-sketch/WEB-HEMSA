@@ -31,6 +31,7 @@ function check(name, condition, details = {}) {
 function saveBody(settings, overrides = {}) {
   return {
     enabled: Boolean(settings.enabled),
+    method: settings.method || 'smtp',
     host: settings.host || '',
     port: settings.port || 587,
     security: settings.security || 'starttls',
@@ -38,6 +39,9 @@ function saveBody(settings, overrides = {}) {
     password: '',
     sender: settings.sender || '',
     recipient: settings.recipient || '',
+    tenantId: settings.tenantId || '',
+    clientId: settings.clientId || '',
+    clientSecret: '',
     ...overrides,
   };
 }
@@ -63,22 +67,40 @@ async function main() {
   check('GET con sesión devuelve la configuración', current.status === 200 && typeof current.data?.settings === 'object');
   const settings = current.data?.settings || {};
   originalSettings = settings;
-  check('la respuesta nunca incluye la contraseña', !('password' in settings) && typeof settings.passwordSet === 'boolean');
-  check('incluye los campos esperados', ['enabled', 'host', 'port', 'security', 'username', 'sender', 'recipient'].every((key) => key in settings));
+  check('la respuesta nunca incluye contraseña ni secreto', !('password' in settings) && !('clientSecret' in settings)
+    && typeof settings.passwordSet === 'boolean' && typeof settings.secretSet === 'boolean');
+  check('incluye los campos esperados', ['enabled', 'method', 'host', 'port', 'security', 'username', 'sender', 'recipient', 'tenantId', 'clientId'].every((key) => key in settings));
 
   const invalid = await request('/api/admin/mail-settings', {
     method: 'POST', auth: true,
-    body: saveBody(settings, { enabled: true, security: 'abierta', sender: 'correo-sin-arroba', port: 0 }),
+    body: saveBody(settings, { method: 'smtp', enabled: true, security: 'abierta', sender: 'correo-sin-arroba', port: 0 }),
   });
-  check('rechaza configuraciones no válidas con 400', invalid.status === 400 && invalid.data?.error?.code === 'VALIDATION_ERROR');
+  check('rechaza configuraciones SMTP no válidas con 400', invalid.status === 400 && invalid.data?.error?.code === 'VALIDATION_ERROR');
   const invalidFields = invalid.data?.error?.fields || {};
   check('informa de los campos incorrectos', Boolean(invalidFields.security) && Boolean(invalidFields.sender) && Boolean(invalidFields.port), { fields: Object.keys(invalidFields) });
+
+  const badMethod = await request('/api/admin/mail-settings', {
+    method: 'POST', auth: true, body: saveBody(settings, { method: 'paloma-mensajera' }),
+  });
+  check('rechaza métodos de envío desconocidos', badMethod.status === 400 && Boolean(badMethod.data?.error?.fields?.method));
+
+  const incompleteGraph = await request('/api/admin/mail-settings', {
+    method: 'POST', auth: true,
+    body: saveBody(settings, { method: 'graph', enabled: true, tenantId: '', clientId: '' }),
+  });
+  check('Graph activado exige tenant, client y secreto', incompleteGraph.status === 400
+    && Boolean(incompleteGraph.data?.error?.fields?.tenantId)
+    && Boolean(incompleteGraph.data?.error?.fields?.clientId)
+    && Boolean(incompleteGraph.data?.error?.fields?.clientSecret));
 
   const kept = await request('/api/admin/mail-settings', {
     method: 'POST', auth: true, body: saveBody(settings),
   });
-  check('guardar con contraseña vacía conserva la actual', kept.status === 200 && kept.data?.settings?.passwordSet === settings.passwordSet);
-  check('guardar no revela la contraseña', kept.status === 200 && !('password' in (kept.data?.settings || {})));
+  check('guardar sin contraseña ni secreto conserva los actuales', kept.status === 200
+    && kept.data?.settings?.passwordSet === settings.passwordSet
+    && kept.data?.settings?.secretSet === settings.secretSet);
+  check('guardar no revela contraseña ni secreto', kept.status === 200
+    && !('password' in (kept.data?.settings || {})) && !('clientSecret' in (kept.data?.settings || {})));
 
   const disabled = await request('/api/admin/mail-settings', {
     method: 'POST', auth: true, body: saveBody(settings, { enabled: false }),

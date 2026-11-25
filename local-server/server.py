@@ -21,7 +21,8 @@ from email.policy import default
 from email.utils import formatdate, make_msgid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import quote, unquote, urlencode, urlparse
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL = ROOT / "local-server"
@@ -186,6 +187,7 @@ def single_line(value: str, name: str) -> str:
 
 MAIL_DEFAULTS = {
     "enabled": False,
+    "method": "smtp",
     "host": "smtp.office365.com",
     "port": 587,
     "security": "starttls",
@@ -193,13 +195,19 @@ MAIL_DEFAULTS = {
     "password": "",
     "sender": "notificaciones@hemsasanfernando.es",
     "recipient": "correo@hemsasanfernando.es",
+    "tenantId": "",
+    "clientId": "",
+    "clientSecret": "",
 }
 MAIL_ENVIRONMENT = {
-    "enabled": "HEMSA_SMTP_ENABLED", "host": "HEMSA_SMTP_HOST", "port": "HEMSA_SMTP_PORT",
+    "enabled": "HEMSA_SMTP_ENABLED", "method": "HEMSA_MAIL_METHOD",
+    "host": "HEMSA_SMTP_HOST", "port": "HEMSA_SMTP_PORT",
     "security": "HEMSA_SMTP_SECURITY", "username": "HEMSA_SMTP_USERNAME", "password": "HEMSA_SMTP_PASSWORD",
     "sender": "HEMSA_SMTP_SENDER", "recipient": "HEMSA_MAIL_RECIPIENT",
+    "tenantId": "HEMSA_GRAPH_TENANT_ID", "clientId": "HEMSA_GRAPH_CLIENT_ID", "clientSecret": "HEMSA_GRAPH_CLIENT_SECRET",
 }
 MAIL_SECURITY_OPTIONS = {"ssl", "starttls", "none"}
+MAIL_METHODS = {"smtp", "graph"}
 MAIL_EMAIL_PATTERN = r"[^\s@]+@[^\s@]+\.[^\s@]+"
 
 
@@ -223,44 +231,59 @@ def load_mail_settings() -> dict:
         settings["port"] = int(settings["port"])
     except (ValueError, TypeError):
         settings["port"] = 0
-    for key in ("host", "security", "username", "password", "sender", "recipient"):
+    for key in ("host", "security", "username", "password", "sender", "recipient", "method", "tenantId", "clientId", "clientSecret"):
         if not isinstance(settings[key], str):
             settings[key] = ""
     settings["security"] = settings["security"].strip().lower()
+    settings["method"] = settings["method"].strip().lower()
+    if settings["method"] not in MAIL_METHODS:
+        settings["method"] = "smtp"
     return settings
 
 
 def check_mail_settings(settings: dict, strict_pair: bool = True) -> dict:
     """Devuelve los errores de la configuración, o un diccionario vacío si es válida."""
     errors = {}
-    if not 1 <= settings["port"] <= 65535:
-        errors["port"] = "Puerto no válido"
-    if settings["security"] not in MAIL_SECURITY_OPTIONS:
-        errors["security"] = "Elige SSL, STARTTLS o sin cifrado"
-    if not settings["host"].strip():
-        errors["host"] = "Indica el servidor de correo saliente"
     for key in ("sender", "recipient"):
         value = settings[key].strip().lower()
         if not value:
             errors[key] = "Indica una dirección de correo"
         elif not re.fullmatch(MAIL_EMAIL_PATTERN, value):
             errors[key] = "Introduce un correo válido"
-    if strict_pair and bool(settings["username"].strip()) != bool(settings["password"]):
-        errors["password"] = "Indica usuario y contraseña, o deja ambos vacíos"
+    if settings["method"] == "graph":
+        if not settings["tenantId"].strip():
+            errors["tenantId"] = "Indica el identificador del inquilino (Tenant ID)"
+        if not settings["clientId"].strip():
+            errors["clientId"] = "Indica el identificador de la aplicación (Client ID)"
+        if strict_pair and not settings["clientSecret"]:
+            errors["clientSecret"] = "Falta el secreto de la aplicación"
+    else:
+        if not 1 <= settings["port"] <= 65535:
+            errors["port"] = "Puerto no válido"
+        if settings["security"] not in MAIL_SECURITY_OPTIONS:
+            errors["security"] = "Elige SSL, STARTTLS o sin cifrado"
+        if not settings["host"].strip():
+            errors["host"] = "Indica el servidor de correo saliente"
+        if strict_pair and bool(settings["username"].strip()) != bool(settings["password"]):
+            errors["password"] = "Indica usuario y contraseña, o deja ambos vacíos"
     return errors
 
 
 def public_mail_settings(settings: dict) -> dict:
-    """Configuración apta para el panel: nunca incluye la contraseña."""
+    """Configuración apta para el panel: nunca incluye la contraseña ni el secreto."""
     return {"settings": {
         "enabled": settings["enabled"],
+        "method": settings["method"],
         "host": settings["host"],
         "port": settings["port"],
         "security": settings["security"],
         "username": settings["username"],
         "sender": settings["sender"],
         "recipient": settings["recipient"],
+        "tenantId": settings["tenantId"],
+        "clientId": settings["clientId"],
         "passwordSet": bool(settings["password"]),
+        "secretSet": bool(settings["clientSecret"]),
     }}
 
 
@@ -285,8 +308,57 @@ def mail_settings() -> dict:
     return settings
 
 
+def graph_access_token(settings: dict) -> str:
+    body = urlencode({
+        "client_id": settings["clientId"],
+        "client_secret": settings["clientSecret"],
+        "scope": "https://graph.microsoft.com/.default",
+        "grant_type": "client_credentials",
+    }).encode("utf-8")
+    request = Request(
+        f"https://login.microsoftonline.com/{quote(settings['tenantId'].strip())}/oauth2/v2.0/token",
+        data=body, headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    with urlopen(request, timeout=20) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    token = payload.get("access_token")
+    if not isinstance(token, str) or not token:
+        raise RuntimeError("Graph no devolvió un token válido")
+    return token
+
+
+def deliver_email_graph(settings: dict, subject: str, body: str, reply_to: str, reference: str):
+    message = {
+        "message": {
+            "subject": subject,
+            "body": {"contentType": "Text", "content": body},
+            "toRecipients": [{"emailAddress": {"address": settings["recipient"]}}],
+            "replyTo": [{"emailAddress": {"address": reply_to}}],
+            "internetMessageHeaders": [{"name": "X-HEMSA-Reference", "value": reference}],
+        },
+        "saveToSentItems": True,
+    }
+    try:
+        token = graph_access_token(settings)
+        request = Request(
+            f"https://graph.microsoft.com/v1.0/users/{quote(settings['sender'])}/sendMail",
+            data=json.dumps(message).encode("utf-8"),
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(request, timeout=20) as response:
+            if response.status not in {200, 202}:
+                raise RuntimeError(f"Graph respondió {response.status}")
+    except Exception as error:
+        print(f"Error de envío Graph: {type(error).__name__}", file=sys.stderr)
+        fail(502, "MAIL_DELIVERY_FAILED", "No hemos podido enviar el mensaje. Inténtalo más tarde o contacta con HEMSA por teléfono")
+
+
 def deliver_email(subject: str, body: str, reply_to: str, reference: str):
     settings = mail_settings()
+    if settings["method"] == "graph":
+        deliver_email_graph(settings, subject, body, reply_to, reference)
+        return
     message = EmailMessage()
     message["From"] = settings["sender"]
     message["To"] = settings["recipient"]
@@ -735,16 +807,24 @@ class Handler(BaseHTTPRequestHandler):
     def mail_settings_write(self):
         payload = self.read_json()
         self.require_admin()
-        require_keys(payload, {"enabled", "host", "port", "security", "username", "password", "sender", "recipient"})
+        require_keys(
+            payload,
+            {"enabled", "host", "port", "security", "username", "password", "sender", "recipient"},
+            {"enabled", "method", "host", "port", "security", "username", "password", "sender", "recipient", "tenantId", "clientId", "clientSecret"},
+        )
         current = load_mail_settings()
         candidate = {
             "enabled": payload["enabled"] if isinstance(payload["enabled"], bool) else fail(400, "VALIDATION_ERROR", "El campo enabled debe ser verdadero o falso", {"enabled": "Valor no válido"}),
+            "method": text(payload.get("method", current["method"]), "method", 0, 20).lower(),
             "host": single_line(text(payload["host"], "host", 0, 160), "host"),
             "security": text(payload["security"], "security", 0, 20).lower(),
             "username": single_line(text(payload["username"], "username", 0, 160), "username"),
             "password": text(payload["password"], "password", 0, 256),
             "sender": text(payload["sender"], "sender", 0, 160).lower(),
             "recipient": text(payload["recipient"], "recipient", 0, 160).lower(),
+            "tenantId": single_line(text(payload.get("tenantId", current["tenantId"]), "tenantId", 0, 80), "tenantId"),
+            "clientId": single_line(text(payload.get("clientId", current["clientId"]), "clientId", 0, 80), "clientId"),
+            "clientSecret": text(payload.get("clientSecret", ""), "clientSecret", 0, 256),
         }
         port = payload["port"]
         if isinstance(port, str) and port.strip().isdigit():
@@ -752,8 +832,12 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(port, int) or isinstance(port, bool):
             fail(400, "VALIDATION_ERROR", "El campo port debe ser un número", {"port": "Puerto no válido"})
         candidate["port"] = port
+        if candidate["method"] not in MAIL_METHODS:
+            fail(400, "VALIDATION_ERROR", "El método de envío debe ser smtp o graph", {"method": "Método no válido"})
         if not candidate["password"]:
             candidate["password"] = current["password"]
+        if not candidate["clientSecret"]:
+            candidate["clientSecret"] = current["clientSecret"]
         errors = check_mail_settings(candidate, strict_pair=candidate["enabled"])
         if errors:
             fail(400, "VALIDATION_ERROR", "Revisa la configuración de correo", errors)

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { MailCheck, Save, Send } from 'lucide-react';
+import { MailCheck, Save, Send, ShieldCheck } from 'lucide-react';
 import { readableError } from '../../lib/api';
 
 const EMPTY_FORM = {
   enabled: false,
+  method: 'graph',
   host: 'smtp.office365.com',
   port: '587',
   security: 'starttls',
@@ -11,11 +12,15 @@ const EMPTY_FORM = {
   password: '',
   sender: '',
   recipient: '',
+  tenantId: '',
+  clientId: '',
+  clientSecret: '',
 };
 
 export default function MailSettings({ request }) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [passwordSet, setPasswordSet] = useState(false);
+  const [secretSet, setSecretSet] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -31,6 +36,7 @@ export default function MailSettings({ request }) {
         const settings = data.settings;
         setForm({
           enabled: Boolean(settings.enabled),
+          method: settings.method || 'smtp',
           host: settings.host || '',
           port: String(settings.port || ''),
           security: settings.security || 'starttls',
@@ -38,8 +44,12 @@ export default function MailSettings({ request }) {
           password: '',
           sender: settings.sender || '',
           recipient: settings.recipient || '',
+          tenantId: settings.tenantId || '',
+          clientId: settings.clientId || '',
+          clientSecret: '',
         });
         setPasswordSet(Boolean(settings.passwordSet));
+        setSecretSet(Boolean(settings.secretSet));
       })
       .catch((reason) => { if (activeRequest) setError(readableError(reason)); })
       .finally(() => { if (activeRequest) setLoading(false); });
@@ -63,7 +73,8 @@ export default function MailSettings({ request }) {
         body: { ...form, port: form.port === '' ? '' : Number(form.port) },
       });
       setPasswordSet(Boolean(data.settings.passwordSet));
-      setForm((previous) => ({ ...previous, password: '' }));
+      setSecretSet(Boolean(data.settings.secretSet));
+      setForm((previous) => ({ ...previous, password: '', clientSecret: '' }));
       setNotice('Configuración guardada correctamente.');
     } catch (reason) {
       setError(readableError(reason));
@@ -93,9 +104,8 @@ export default function MailSettings({ request }) {
   if (loading) return <p className="admin-loading">Cargando la configuración de correo…</p>;
 
   return <div className="admin-card">
-    <div className="admin-card-title"><MailCheck size={20} /><h2>Buzón de envío de la web</h2></div>
-    <p>Es el correo que usan los formularios de <strong>contacto</strong> y <strong>cita previa</strong> para entregar los mensajes en HEMSA. La contraseña nunca se muestra: escribe una nueva solo si quieres cambiarla.</p>
-    <div className="local-demo-notice"><p><strong>Aviso importante:</strong> en el servidor de pruebas gratuito (Render) el envío de correo está bloqueado y los cambios pueden perderse al reiniciarse. Esta configuración funcionará por completo cuando la web pase al servidor definitivo.</p></div>
+    <div className="admin-card-title"><MailCheck size={20} /><div><h2>Buzón de envío de la web</h2><p>Correo que usan los formularios de contacto y cita previa.</p></div></div>
+    <p>La contraseña y el secreto nunca se muestran: escribe valores nuevos solo si quieres cambiarlos.</p>
 
     <form onSubmit={save} className="admin-mail-form">
       <label className="admin-toggle">
@@ -103,35 +113,63 @@ export default function MailSettings({ request }) {
         <span><strong>Envío de correo activado</strong><small>Si está desactivado, los formularios avisan de que el correo no está configurado.</small></span>
       </label>
 
-      <div className="form-row form-row-three">
-        <label>Servidor de correo saliente (SMTP)
-          <input type="text" value={form.host} onChange={(event) => update('host', event.target.value)} maxLength={160} placeholder="smtp.office365.com" autoComplete="off" />
-          {fieldError('host')}
-        </label>
-        <label>Puerto
-          <input type="number" min="1" max="65535" value={form.port} onChange={(event) => update('port', event.target.value)} placeholder="587" />
-          {fieldError('port')}
-        </label>
-        <label>Seguridad
-          <select value={form.security} onChange={(event) => update('security', event.target.value)}>
-            <option value="starttls">STARTTLS (recomendado, puerto 587)</option>
-            <option value="ssl">SSL/TLS (puerto 465)</option>
-            <option value="none">Sin cifrado (no recomendado)</option>
-          </select>
-          {fieldError('security')}
-        </label>
-      </div>
+      <label>Método de envío
+        <select value={form.method} onChange={(event) => update('method', event.target.value)}>
+          <option value="graph">Microsoft Graph (recomendado: mantiene toda la seguridad de Microsoft 365)</option>
+          <option value="smtp">SMTP clásico (solo si la organización permite SMTP autenticado)</option>
+        </select>
+        {fieldError('method')}
+      </label>
 
-      <div className="form-row">
-        <label>Usuario del buzón
-          <input type="text" value={form.username} onChange={(event) => update('username', event.target.value)} maxLength={160} placeholder="notificaciones@hemsasanfernando.es" autoComplete="off" />
-          {fieldError('username')}
+      {form.method === 'graph' && <>
+        <div className="local-demo-notice admin-mail-note"><ShieldCheck size={20} /><p><strong>Seguridad intacta:</strong> Graph envía por HTTPS con una aplicación registrada en Entra ID. No usa la contraseña del buzón y funciona con los «security defaults» activados. Necesitas el Tenant ID, el Client ID y el secreto de la aplicación «Web HEMSA» con permiso <em>Mail.Send</em>.</p></div>
+        <div className="form-row">
+          <label>Tenant ID (identificador del inquilino)
+            <input type="text" value={form.tenantId} onChange={(event) => update('tenantId', event.target.value)} maxLength={80} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autoComplete="off" />
+            {fieldError('tenantId')}
+          </label>
+          <label>Client ID (identificador de la aplicación)
+            <input type="text" value={form.clientId} onChange={(event) => update('clientId', event.target.value)} maxLength={80} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autoComplete="off" />
+            {fieldError('clientId')}
+          </label>
+        </div>
+        <label>Secreto de la aplicación {secretSet && <small>Guardado — escribe solo si quieres cambiarlo</small>}
+          <input type="password" value={form.clientSecret} onChange={(event) => update('clientSecret', event.target.value)} maxLength={256} placeholder={secretSet ? 'Dejar en blanco para conservar el actual' : 'Valor del secreto de cliente'} autoComplete="new-password" />
+          {fieldError('clientSecret')}
         </label>
-        <label>Contraseña {passwordSet && <small>Guardada — escribe solo si quieres cambiarla</small>}
-          <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} maxLength={256} placeholder={passwordSet ? 'Dejar en blanco para conservar la actual' : 'Contraseña del buzón'} autoComplete="new-password" />
-          {fieldError('password')}
-        </label>
-      </div>
+      </>}
+
+      {form.method === 'smtp' && <>
+        <div className="local-demo-notice admin-mail-note"><p><strong>Ojo:</strong> Microsoft 365 bloquea SMTP clásico cuando los «security defaults» están activos. Además, el servidor de pruebas gratuito (Render) bloquea los puertos de correo. Usa Graph salvo que tu organización permita SMTP autenticado expresamente.</p></div>
+        <div className="form-row form-row-three">
+          <label>Servidor de correo saliente (SMTP)
+            <input type="text" value={form.host} onChange={(event) => update('host', event.target.value)} maxLength={160} placeholder="smtp.office365.com" autoComplete="off" />
+            {fieldError('host')}
+          </label>
+          <label>Puerto
+            <input type="number" min="1" max="65535" value={form.port} onChange={(event) => update('port', event.target.value)} placeholder="587" />
+            {fieldError('port')}
+          </label>
+          <label>Seguridad
+            <select value={form.security} onChange={(event) => update('security', event.target.value)}>
+              <option value="starttls">STARTTLS (recomendado, puerto 587)</option>
+              <option value="ssl">SSL/TLS (puerto 465)</option>
+              <option value="none">Sin cifrado (no recomendado)</option>
+            </select>
+            {fieldError('security')}
+          </label>
+        </div>
+        <div className="form-row">
+          <label>Usuario del buzón
+            <input type="text" value={form.username} onChange={(event) => update('username', event.target.value)} maxLength={160} placeholder="notificaciones@hemsasanfernando.es" autoComplete="off" />
+            {fieldError('username')}
+          </label>
+          <label>Contraseña {passwordSet && <small>Guardada — escribe solo si quieres cambiarla</small>}
+            <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} maxLength={256} placeholder={passwordSet ? 'Dejar en blanco para conservar la actual' : 'Contraseña del buzón'} autoComplete="new-password" />
+            {fieldError('password')}
+          </label>
+        </div>
+      </>}
 
       <div className="form-row">
         <label>Remitente (de)
