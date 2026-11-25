@@ -58,7 +58,7 @@ def main() -> int:
                 "HEMSA_ADMIN_PASSWORD": credentials["password"],
             })
             results = []
-            for suite in ("api-acceptance.mjs", "editorial-api-acceptance.mjs"):
+            for suite in ("api-acceptance.mjs", "editorial-api-acceptance.mjs", "mail-api-acceptance.mjs"):
                 completed = subprocess.run(
                     [os.environ.get("NODE", "node.CMD" if os.name == "nt" else "node"), str(ROOT / "integration" / suite)],
                     cwd=ROOT,
@@ -68,7 +68,7 @@ def main() -> int:
                 results.append(completed.returncode)
                 if completed.returncode != 0:
                     break
-            return 0 if results == [0, 0] else 1
+            return 0 if results == [0, 0, 0] else 1
     finally:
         if process is not None:
             if process.poll() is None:

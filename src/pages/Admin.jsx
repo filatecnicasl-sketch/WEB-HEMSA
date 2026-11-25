@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, ArrowUpRight, Bell, BriefcaseBusiness, Database, FileText,
-  History, Home, LayoutDashboard, LockKeyhole, LogOut, Megaphone,
+  History, Home, LayoutDashboard, LockKeyhole, LogOut, Mail, Megaphone,
   Settings, ShieldCheck,
 } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
@@ -10,6 +10,7 @@ import { ADMIN_SESSION_KEY, apiRequest, readableError } from '../lib/api';
 import ContentEditor from '../components/admin/ContentEditor';
 import EditorialEditor from '../components/admin/EditorialEditor';
 import HistoryPanel from '../components/admin/HistoryPanel';
+import MailSettings from '../components/admin/MailSettings';
 import '../styles/admin.css';
 
 const sections = [
@@ -17,6 +18,7 @@ const sections = [
   { id: 'grants', label: 'Ayudas y subvenciones', icon: Megaphone, title: 'Gestionar ayudas y subvenciones', text: 'Crea noticias, actualiza plazos y reúne la documentación de cada expediente.' },
   { id: 'jobs', label: 'Empleo', icon: BriefcaseBusiness, title: 'Gestionar empleo y convocatorias', text: 'Publica convocatorias y añade listados o resultados al mismo proceso.' },
   { id: 'contacto', label: 'Contacto', icon: Settings, title: 'Editar datos de contacto', text: 'Actualiza los datos generales de atención a la ciudadanía.' },
+  { id: 'email', label: 'Correo', icon: Mail, title: 'Configurar el correo de envío', text: 'Ajusta el buzón que usan los formularios de contacto y cita previa.' },
   { id: 'history', label: 'Historial general', icon: History, title: 'Historial y copias de seguridad', text: 'Recupera versiones anteriores de Inicio y Contacto sin publicar automáticamente.' },
 ];
 
@@ -158,11 +160,12 @@ export default function Admin() {
         <div className="local-demo-notice"><Database size={20} /><p><strong>Datos guardados en este equipo:</strong> los borradores son privados y la web pública solo cambia al pulsar «Publicar». Nada se está enviando a un servidor en la nube.</p></div>
 
         {dataError && <div className="form-status admin-error" role="alert">{dataError}<button type="button" className="button button-small" onClick={loadData}>Reintentar</button></div>}
-        {checking || !contentState ? <p className="admin-loading">Cargando contenidos…</p> : <>
+        {active === 'email' && <MailSettings request={request} />}
+        {active !== 'email' && (checking || !contentState ? <p className="admin-loading">Cargando contenidos…</p> : <>
           {(active === 'inicio' || active === 'contacto') && <ContentEditor section={active} state={contentState} request={request} onState={setContentState} onPublished={refreshContent} />}
           {(active === 'grants' || active === 'jobs') && <EditorialEditor key={active} kind={active} items={collections[active]} request={request} onSaved={editorialSaved} />}
           {active === 'history' && <HistoryPanel state={contentState} request={request} onState={setContentState} />}
-        </>}
+        </>)}
       </div>
     </div>
   </section>;

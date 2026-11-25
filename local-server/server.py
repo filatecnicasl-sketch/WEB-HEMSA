@@ -184,49 +184,104 @@ def single_line(value: str, name: str) -> str:
     return value
 
 
-def mail_settings() -> dict:
-    settings = {
-        "enabled": False,
-        "host": "smtp.ionos.es",
-        "port": 465,
-        "security": "ssl",
-        "username": "correo@hemsasanfernando.es",
-        "password": "",
-        "sender": "correo@hemsasanfernando.es",
-        "recipient": "correo@hemsasanfernando.es",
-    }
+MAIL_DEFAULTS = {
+    "enabled": False,
+    "host": "smtp.office365.com",
+    "port": 587,
+    "security": "starttls",
+    "username": "notificaciones@hemsasanfernando.es",
+    "password": "",
+    "sender": "notificaciones@hemsasanfernando.es",
+    "recipient": "correo@hemsasanfernando.es",
+}
+MAIL_ENVIRONMENT = {
+    "enabled": "HEMSA_SMTP_ENABLED", "host": "HEMSA_SMTP_HOST", "port": "HEMSA_SMTP_PORT",
+    "security": "HEMSA_SMTP_SECURITY", "username": "HEMSA_SMTP_USERNAME", "password": "HEMSA_SMTP_PASSWORD",
+    "sender": "HEMSA_SMTP_SENDER", "recipient": "HEMSA_MAIL_RECIPIENT",
+}
+MAIL_SECURITY_OPTIONS = {"ssl", "starttls", "none"}
+MAIL_EMAIL_PATTERN = r"[^\s@]+@[^\s@]+\.[^\s@]+"
+
+
+def load_mail_settings() -> dict:
+    """Carga la configuración guardada sin lanzar errores: valores base -> entorno -> archivo."""
+    settings = dict(MAIL_DEFAULTS)
+    for key, variable in MAIL_ENVIRONMENT.items():
+        if variable in os.environ:
+            settings[key] = os.environ[variable]
     try:
         if MAIL_CONFIG_PATH.exists():
             saved = json.loads(MAIL_CONFIG_PATH.read_text(encoding="utf-8"))
-            if not isinstance(saved, dict) or set(saved) - set(settings):
-                raise ValueError("Configuración no válida")
-            settings.update(saved)
-        environment = {
-            "enabled": "HEMSA_SMTP_ENABLED", "host": "HEMSA_SMTP_HOST", "port": "HEMSA_SMTP_PORT",
-            "security": "HEMSA_SMTP_SECURITY", "username": "HEMSA_SMTP_USERNAME", "password": "HEMSA_SMTP_PASSWORD",
-            "sender": "HEMSA_SMTP_SENDER", "recipient": "HEMSA_MAIL_RECIPIENT",
-        }
-        for key, variable in environment.items():
-            if variable in os.environ:
-                settings[key] = os.environ[variable]
-        if isinstance(settings["enabled"], str):
-            settings["enabled"] = settings["enabled"].strip().lower() in {"1", "true", "yes", "on"}
+            if isinstance(saved, dict):
+                settings.update({key: saved[key] for key in MAIL_DEFAULTS if key in saved})
+    except (json.JSONDecodeError, OSError):
+        pass
+    if isinstance(settings["enabled"], str):
+        settings["enabled"] = settings["enabled"].strip().lower() in {"1", "true", "yes", "on"}
+    settings["enabled"] = bool(settings["enabled"])
+    try:
         settings["port"] = int(settings["port"])
-    except (ValueError, TypeError, json.JSONDecodeError, OSError):
-        fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo no está configurado correctamente")
-    if not settings["enabled"]:
-        fail(503, "MAIL_NOT_CONFIGURED", "El envío directo todavía necesita la contraseña del correo de HEMSA")
-    if settings["security"] not in {"ssl", "starttls", "none"} or not 1 <= settings["port"] <= 65535:
-        fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo no está configurado correctamente")
-    for key in ("host", "sender", "recipient"):
-        if not isinstance(settings[key], str) or not settings[key].strip():
-            fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo no está configurado correctamente")
+    except (ValueError, TypeError):
+        settings["port"] = 0
+    for key in ("host", "security", "username", "password", "sender", "recipient"):
+        if not isinstance(settings[key], str):
+            settings[key] = ""
+    settings["security"] = settings["security"].strip().lower()
+    return settings
+
+
+def check_mail_settings(settings: dict, strict_pair: bool = True) -> dict:
+    """Devuelve los errores de la configuración, o un diccionario vacío si es válida."""
+    errors = {}
+    if not 1 <= settings["port"] <= 65535:
+        errors["port"] = "Puerto no válido"
+    if settings["security"] not in MAIL_SECURITY_OPTIONS:
+        errors["security"] = "Elige SSL, STARTTLS o sin cifrado"
+    if not settings["host"].strip():
+        errors["host"] = "Indica el servidor de correo saliente"
     for key in ("sender", "recipient"):
-        settings[key] = settings[key].strip().lower()
-        if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", settings[key]):
-            fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo no está configurado correctamente")
-    if bool(settings["username"]) != bool(settings["password"]):
+        value = settings[key].strip().lower()
+        if not value:
+            errors[key] = "Indica una dirección de correo"
+        elif not re.fullmatch(MAIL_EMAIL_PATTERN, value):
+            errors[key] = "Introduce un correo válido"
+    if strict_pair and bool(settings["username"].strip()) != bool(settings["password"]):
+        errors["password"] = "Indica usuario y contraseña, o deja ambos vacíos"
+    return errors
+
+
+def public_mail_settings(settings: dict) -> dict:
+    """Configuración apta para el panel: nunca incluye la contraseña."""
+    return {"settings": {
+        "enabled": settings["enabled"],
+        "host": settings["host"],
+        "port": settings["port"],
+        "security": settings["security"],
+        "username": settings["username"],
+        "sender": settings["sender"],
+        "recipient": settings["recipient"],
+        "passwordSet": bool(settings["password"]),
+    }}
+
+
+def save_mail_settings(settings: dict):
+    PRIVATE.mkdir(parents=True, exist_ok=True)
+    MAIL_CONFIG_PATH.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        os.chmod(MAIL_CONFIG_PATH, 0o600)
+    except OSError:
+        pass
+
+
+def mail_settings() -> dict:
+    settings = load_mail_settings()
+    if not settings["enabled"]:
+        fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo está desactivado. Actívalo desde el gestor de contenidos")
+    if check_mail_settings(settings):
         fail(503, "MAIL_NOT_CONFIGURED", "El envío de correo no está configurado correctamente")
+    settings["sender"] = settings["sender"].strip().lower()
+    settings["recipient"] = settings["recipient"].strip().lower()
+    settings["username"] = settings["username"].strip()
     return settings
 
 
@@ -677,6 +732,58 @@ class Handler(BaseHTTPRequestHandler):
             updated = db.execute("SELECT * FROM site_content WHERE id=1").fetchone()
             return 200, STORE.content_state(updated)
 
+    def mail_settings_write(self):
+        payload = self.read_json()
+        self.require_admin()
+        require_keys(payload, {"enabled", "host", "port", "security", "username", "password", "sender", "recipient"})
+        current = load_mail_settings()
+        candidate = {
+            "enabled": payload["enabled"] if isinstance(payload["enabled"], bool) else fail(400, "VALIDATION_ERROR", "El campo enabled debe ser verdadero o falso", {"enabled": "Valor no válido"}),
+            "host": single_line(text(payload["host"], "host", 0, 160), "host"),
+            "security": text(payload["security"], "security", 0, 20).lower(),
+            "username": single_line(text(payload["username"], "username", 0, 160), "username"),
+            "password": text(payload["password"], "password", 0, 256),
+            "sender": text(payload["sender"], "sender", 0, 160).lower(),
+            "recipient": text(payload["recipient"], "recipient", 0, 160).lower(),
+        }
+        port = payload["port"]
+        if isinstance(port, str) and port.strip().isdigit():
+            port = int(port.strip())
+        if not isinstance(port, int) or isinstance(port, bool):
+            fail(400, "VALIDATION_ERROR", "El campo port debe ser un número", {"port": "Puerto no válido"})
+        candidate["port"] = port
+        if not candidate["password"]:
+            candidate["password"] = current["password"]
+        errors = check_mail_settings(candidate, strict_pair=candidate["enabled"])
+        if errors:
+            fail(400, "VALIDATION_ERROR", "Revisa la configuración de correo", errors)
+        with LOCK:
+            save_mail_settings(candidate)
+        return 200, public_mail_settings(load_mail_settings())
+
+    def mail_settings_test(self):
+        self.require_admin()
+        key = f"{self.client_address[0]}|mail-test"
+        current = time.time()
+        with LOCK:
+            attempts = [stamp for stamp in FORM_ATTEMPTS.get(key, []) if current - stamp < 900]
+            if len(attempts) >= 5:
+                fail(429, "TOO_MANY_REQUESTS", "Has realizado demasiadas pruebas. Espera unos minutos antes de volver a intentarlo")
+            attempts.append(current)
+            FORM_ATTEMPTS[key] = attempts
+        settings = mail_settings()
+        reference = f"TEST-{secrets.token_hex(4).upper()}"
+        body = (
+            "Prueba de envío del correo de la web de HEMSA\n"
+            f"Referencia: {reference}\n\n"
+            "Si recibes este mensaje, la configuración del buzón es correcta y los formularios "
+            "de contacto y cita previa ya pueden enviar correos.\n\n"
+            f"Servidor: {settings['host']}:{settings['port']} ({settings['security']})\n"
+            f"Remitente: {settings['sender']}"
+        )
+        deliver_email(f"[Web HEMSA] Prueba de correo — {reference}", body, settings["sender"], reference)
+        return 200, {"ok": True, "recipient": settings["recipient"], "reference": reference}
+
     def login(self):
         payload = self.read_json()
         require_keys(payload, {"email", "password"})
@@ -945,6 +1052,13 @@ class Handler(BaseHTTPRequestHandler):
         if method == "GET" and path == "/api/admin/content/revisions":
             self.require_admin()
             return 200, STORE.revision_summaries("content", "site")
+        if method == "GET" and path == "/api/admin/mail-settings":
+            self.require_admin()
+            return 200, public_mail_settings(load_mail_settings())
+        if method == "POST" and path == "/api/admin/mail-settings":
+            return self.mail_settings_write()
+        if method == "POST" and path == "/api/admin/mail-settings/test":
+            return self.mail_settings_test()
         match = re.fullmatch(r"/api/admin/content/revisions/([^/]+)", path)
         if method == "GET" and match:
             return self.revision_detail(unquote(match.group(1)))
