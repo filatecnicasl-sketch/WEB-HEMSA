@@ -6,7 +6,8 @@ import {
 import HeroCarousel from '../components/HeroCarousel';
 import { useSite } from '../context/SiteContext';
 
-const registryUrl = '/vivienda/registro';
+const registryUrl = 'https://hemsa-frontend.onrender.com/';
+const registryInfoUrl = '/vivienda/registro';
 const services = [
   {
     title: 'Servicio Municipal de Ayuda a Domicilio',
@@ -64,7 +65,7 @@ export default function Home() {
             <h1><HeroTitle title={content.hero.title} /></h1>
             <p>{content.hero.text}</p>
             <div className="r-hero-actions"><Link to="/cita-previa" className="r-button"><CalendarDays size={16} />Pide tu cita previa<ArrowRight size={16} /></Link><a href="#servicios" className="r-button-quiet">Cómo te ayudamos</a></div>
-            <Link to={registryUrl} className="r-registry-link"><ClipboardList size={16} />Registro de Vivienda Protegida<ArrowUpRight size={15} /></Link>
+            <a href={registryUrl} target="_blank" rel="noreferrer" className="r-registry-link"><ClipboardList size={16} />Registro de Vivienda Protegida<ArrowUpRight size={15} /></a>
           </div>
           <HeroCarousel />
         </div>
@@ -73,7 +74,7 @@ export default function Home() {
       <section className="container r-registry" aria-labelledby="registry-title">
         <div className="r-registry-icon"><ClipboardList size={28} /></div>
         <div className="r-registry-copy"><span><span className="r-online-dot" />Plataforma online</span><h2 id="registry-title">Registro Municipal de Demandantes de Vivienda Protegida</h2><p>Accede a la plataforma del Registro para gestionar las inscripciones de demandantes de vivienda protegida de San Fernando.</p></div>
-        <div className="r-registry-actions"><Link to={registryUrl} className="r-button r-button-bright">Acceder al Registro<ArrowUpRight size={16} /></Link><Link to="/cita-previa" className="r-button-dark">Pedir cita previa</Link></div>
+        <div className="r-registry-actions"><a href={registryUrl} target="_blank" rel="noreferrer" className="r-button r-button-bright">Acceder al Registro<ArrowUpRight size={16} /></a><Link to={registryInfoUrl} className="r-button-dark">Cómo inscribirse</Link></div>
       </section>
 
       <section className="container r-services" id="servicios" aria-labelledby="services-title">

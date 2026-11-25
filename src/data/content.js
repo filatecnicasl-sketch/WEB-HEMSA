@@ -1,4 +1,4 @@
-export const REGISTRO_URL = "/vivienda/registro";
+export const REGISTRO_URL = "https://hemsa-frontend.onrender.com/";
 
 export const CONTACT = {
   phone: "956 94 50 00",
