@@ -389,6 +389,25 @@ def send_email(settings: dict, to: str, subject: str, text_body: str, html_body:
 
 MADRID_TZ = ZoneInfo("Europe/Madrid")
 
+DEPARTMENTS = {
+    "Información general": "Secretaría e Información",
+    "Vivienda y promociones": "Departamento de Vivienda",
+    "Vivienda y registro de demandantes": "Departamento de Vivienda",
+    "Venta de mi vivienda": "Departamento de Vivienda",
+    "Ayuda a domicilio": "Servicio de Ayuda a Domicilio",
+    "Servicio de Ayuda a Domicilio": "Servicio de Ayuda a Domicilio",
+    "Garajes, locales y parcelas": "Departamento de Patrimonio",
+    "Garajes y trasteros": "Departamento de Patrimonio",
+    "Locales y parcelas": "Departamento de Patrimonio",
+    "Empleo y convocatorias": "Recursos Humanos",
+    "Transparencia y documentación": "Secretaría — Transparencia",
+    "Quejas y sugerencias": "Atención a la Ciudadanía",
+}
+
+
+def department_for(topic: str) -> str:
+    return DEPARTMENTS.get(topic, "Secretaría e Información")
+
 
 def esc(value: str) -> str:
     return html.escape(value, quote=True)
@@ -462,13 +481,14 @@ def email_message_html(label: str, content: str) -> str:
     )
 
 
-def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone: str, topic: str, details: str):
+def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone: str, topic: str, department: str, details: str):
     """Entrega la entrada en el buzón de HEMSA y envía el acuse de recibo a la ciudadanía."""
     settings = mail_settings()
     contact = kind == "contact"
     heading = "Formulario de contacto web" if contact else "Solicitud de cita previa web"
     subject = f"[Registro {reference}] {topic} — {name}"
     rows = [
+        ("Dirigido a", department),
         ("Nombre y apellidos", name),
         ("Correo electrónico", email),
         ("Teléfono", phone or "No indicado"),
@@ -487,7 +507,7 @@ def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone:
     )
     send_email(settings, settings["recipient"], subject, text_body, html_body, email, reference)
 
-    receipt_rows = [("Su nombre", name), ("Asunto" if contact else "Motivo de la cita", topic)]
+    receipt_rows = [("Su nombre", name), ("Asunto" if contact else "Motivo de la cita", topic), ("Dirigido a", department)]
     appointment_note = "" if contact else (
         "\n\nImportante: la cita NO queda confirmada con este acuse. "
         "HEMSA se pondrá en contacto con usted para confirmar día y hora."
@@ -508,8 +528,8 @@ def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone:
             "La cita NO queda confirmada con este acuse. HEMSA se pondrá en contacto con usted para confirmar día y hora.")),
         intro=(
             f"Gracias por contactar con HEMSA. Su solicitud ha quedado registrada con el número "
-            f"<strong>{reference}</strong>. Consérvelo para cualquier consulta. "
-            "Este es un mensaje automático; no es necesario responder."
+            f"<strong>{reference}</strong> y se ha dirigido a <strong>{department}</strong>. "
+            "Consérvelo para cualquier consulta. Este es un mensaje automático; no es necesario responder."
         ),
     )
     try:
@@ -557,10 +577,13 @@ class Store:
                 CREATE TABLE IF NOT EXISTS revisions (id TEXT PRIMARY KEY, type TEXT NOT NULL, owner_id TEXT NOT NULL, action TEXT NOT NULL, content TEXT NOT NULL, created_at TEXT NOT NULL, created_by INTEGER NOT NULL REFERENCES admins(id));
                 CREATE TABLE IF NOT EXISTS documents (id TEXT PRIMARY KEY, owner_type TEXT NOT NULL, owner_id TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, pages INTEGER, bytes INTEGER NOT NULL, kind TEXT NOT NULL, source TEXT NOT NULL, url TEXT NOT NULL, data BLOB NOT NULL, created_at TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS registry_counters (kind TEXT NOT NULL, year INTEGER NOT NULL, counter INTEGER NOT NULL, PRIMARY KEY(kind, year));
-                CREATE TABLE IF NOT EXISTS form_entries (reference TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT NOT NULL, topic TEXT NOT NULL, details TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS form_entries (reference TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT NOT NULL, topic TEXT NOT NULL, department TEXT NOT NULL DEFAULT '', details TEXT NOT NULL, created_at TEXT NOT NULL);
                 CREATE INDEX IF NOT EXISTS idx_revisions_owner ON revisions(type,owner_id,created_at);
                 CREATE INDEX IF NOT EXISTS idx_documents_owner ON documents(owner_type,owner_id);
             """)
+            columns = {row[1] for row in db.execute("PRAGMA table_info(form_entries)")}
+            if "department" not in columns:
+                db.execute("ALTER TABLE form_entries ADD COLUMN department TEXT NOT NULL DEFAULT ''")
 
     def admin_credentials(self):
         email = os.environ.get("HEMSA_ADMIN_EMAIL")
@@ -1251,13 +1274,14 @@ class Handler(BaseHTTPRequestHandler):
                 fail(429, "TOO_MANY_REQUESTS", "Se han realizado demasiados envíos. Espera unos minutos antes de volver a intentarlo")
             attempts.append(current)
             FORM_ATTEMPTS[key] = attempts
+        department = department_for(topic)
         with LOCK, STORE.connect() as db:
             reference = next_reference(db, kind)
             db.execute(
-                "INSERT INTO form_entries(reference,kind,name,email,phone,topic,details,created_at) VALUES(?,?,?,?,?,?,?,?)",
-                (reference, kind, name, email, phone, topic, details, NOW()),
+                "INSERT INTO form_entries(reference,kind,name,email,phone,topic,department,details,created_at) VALUES(?,?,?,?,?,?,?,?,?)",
+                (reference, kind, name, email, phone, topic, department, details, NOW()),
             )
-        deliver_form_emails(kind, reference, name, email, phone, topic, details)
+        deliver_form_emails(kind, reference, name, email, phone, topic, department, details)
         return 201, {"ok": True, "reference": reference}
 
     def route(self, method, path):
