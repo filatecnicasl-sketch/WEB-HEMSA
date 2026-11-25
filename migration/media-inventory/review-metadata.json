@@ -1,0 +1,67 @@
+{
+  "image_sheet": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\fotografias-contacto.jpg",
+  "videos": [
+    {
+      "name": "132ViviendasVPO_Hemsa_mods.mp4",
+      "duration_seconds": 72.0,
+      "contact_sheet": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-contacto.jpg",
+      "frames": [
+        {
+          "time_seconds": 1.44,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-1.jpg"
+        },
+        {
+          "time_seconds": 14.4,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-2.jpg"
+        },
+        {
+          "time_seconds": 28.8,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-3.jpg"
+        },
+        {
+          "time_seconds": 43.2,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-4.jpg"
+        },
+        {
+          "time_seconds": 57.6,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-5.jpg"
+        },
+        {
+          "time_seconds": 69.12,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-1-frames\\fotograma-6.jpg"
+        }
+      ]
+    },
+    {
+      "name": "436950 SAN FERNANDO UTE SERROT HERYSAN 2026 ORIGEN CON DRON.mp4",
+      "duration_seconds": 205.12,
+      "contact_sheet": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-contacto.jpg",
+      "frames": [
+        {
+          "time_seconds": 4.102,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-1.jpg"
+        },
+        {
+          "time_seconds": 41.024,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-2.jpg"
+        },
+        {
+          "time_seconds": 82.048,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-3.jpg"
+        },
+        {
+          "time_seconds": 123.072,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-4.jpg"
+        },
+        {
+          "time_seconds": 164.096,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-5.jpg"
+        },
+        {
+          "time_seconds": 196.915,
+          "path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\migration\\media-inventory\\previews\\video-2-frames\\fotograma-6.jpg"
+        }
+      ]
+    }
+  ]
+}

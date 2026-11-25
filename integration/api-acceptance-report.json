@@ -1,0 +1,93 @@
+{
+  "base": "http://127.0.0.1:5194",
+  "checks": [
+    {
+      "name": "Health JSON",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Contenido publico inicial",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Ruta privada sin token",
+      "passed": true,
+      "status": 401
+    },
+    {
+      "name": "Login incorrecto",
+      "passed": true,
+      "status": 401
+    },
+    {
+      "name": "Preflight CORS",
+      "passed": true,
+      "status": 204
+    },
+    {
+      "name": "Login valido",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Sesion valida",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Estado editorial privado",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Borrador invalido rechazado",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "name": "Borrador no publicado",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Descartar borrador",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Conflicto de versiones",
+      "passed": true,
+      "status": 409
+    },
+    {
+      "name": "Publicacion real",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Historial y exportacion JSON",
+      "passed": true,
+      "revisionId": "750be86e1bdc1e44811e67f4a0b46825"
+    },
+    {
+      "name": "Restaurar solo al borrador",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Contenido inicial republicado",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Logout invalida sesion",
+      "passed": true,
+      "logout": 204,
+      "me": 401
+    }
+  ],
+  "cleanup": null,
+  "passed": true
+}

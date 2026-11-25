@@ -1,0 +1,9 @@
+.git
+node_modules
+dist
+backups
+test-output
+.tmp
+local-server/data
+local-server/private
+*.zip

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+backups/
+test-output/
+incoming/
+local-server/data/
+local-server/private/
+research/
+original-home.html
+original-sitemap.xml
+*.log
+.DS_Store

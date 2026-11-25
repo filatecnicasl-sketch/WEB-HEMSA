@@ -1,0 +1,1392 @@
+openapi: 3.0.3
+info:
+  title: HEMSA Content Editor API
+  version: 1.1.0
+  description: API privada de edicion y lectura publica del contenido publicado.
+servers:
+  - url: /
+tags:
+  - name: System
+  - name: Public
+  - name: Auth
+  - name: Admin
+paths:
+  /api/health:
+    get:
+      tags: [System]
+      summary: Comprueba el servicio
+      responses:
+        '200':
+          description: Servicio disponible
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+  /api/public/content:
+    get:
+      tags: [Public]
+      summary: Devuelve solo el contenido publicado
+      responses:
+        '200':
+          description: Contenido publico actual
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishedContent'
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Inicia una sesion de administrador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 160
+                password:
+                  type: string
+                  minLength: 1
+                  maxLength: 256
+      responses:
+        '200':
+          description: Sesion creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+        '401':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Invalida el token actual
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Sesion cerrada
+        '401':
+          $ref: '#/components/responses/Error'
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Devuelve el administrador autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Administrador actual
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [user]
+                properties:
+                  user:
+                    $ref: '#/components/schemas/AdminUser'
+        '401':
+          $ref: '#/components/responses/Error'
+  /api/admin/content:
+    get:
+      tags: [Admin]
+      summary: Devuelve borrador, publicado y version
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estado editorial privado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorState'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/draft:
+    post:
+      tags: [Admin]
+      summary: Guarda un borrador sin publicarlo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/ContentWrite'
+      responses:
+        '200':
+          description: Borrador guardado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorState'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/publish:
+    post:
+      tags: [Admin]
+      summary: Publica el borrador y crea revisiones
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [baseVersion]
+              properties:
+                baseVersion:
+                  type: integer
+                  minimum: 1
+      responses:
+        '200':
+          description: Contenido publicado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorState'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/discard-draft:
+    post:
+      tags: [Admin]
+      summary: Descarta el borrador y recupera el publicado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [baseVersion]
+              properties:
+                baseVersion:
+                  type: integer
+                  minimum: 1
+      responses:
+        '200':
+          description: Borrador descartado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorState'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/revisions:
+    get:
+      tags: [Admin]
+      summary: Lista las revisiones sin exponer otros datos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Historial de revisiones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [revisions]
+                properties:
+                  revisions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RevisionSummary'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/revisions/{revisionId}:
+    get:
+      tags: [Admin]
+      summary: Obtiene una revision completa para consulta o exportacion JSON
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: revisionId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Revision completa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revision'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/admin/content/revisions/restore:
+    post:
+      tags: [Admin]
+      summary: Copia una revision al borrador sin publicarla
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [revisionId, baseVersion]
+              properties:
+                revisionId:
+                  type: string
+                  minLength: 1
+                baseVersion:
+                  type: integer
+                  minimum: 1
+      responses:
+        '200':
+          description: Revision copiada al borrador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorState'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/public/grants:
+    get:
+      tags: [Public]
+      summary: Lista las ayudas publicadas
+      responses:
+        '200':
+          description: Ayudas publicas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantPublicList'
+  /api/public/grants/{id}:
+    get:
+      tags: [Public]
+      summary: Obtiene una ayuda publicada
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Ayuda publica
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantPublicDetail'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/public/jobs:
+    get:
+      tags: [Public]
+      summary: Lista los procesos de empleo publicados
+      responses:
+        '200':
+          description: Procesos publicos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobPublicList'
+  /api/public/jobs/{id}:
+    get:
+      tags: [Public]
+      summary: Obtiene un proceso de empleo publicado
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Proceso publico
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobPublicDetail'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/public/documents/{documentId}:
+    get:
+      tags: [Public]
+      summary: Descarga un PDF perteneciente a contenido publicado
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: PDF publico
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants:
+    get:
+      tags: [Admin]
+      summary: Lista todos los estados editoriales de ayudas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ayudas editoriales
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialList'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+    post:
+      tags: [Admin]
+      summary: Crea una ayuda como borrador privado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantCreate'
+      responses:
+        '200':
+          description: Borrador creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants/{id}:
+    get:
+      tags: [Admin]
+      summary: Obtiene el estado editorial de una ayuda
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Estado editorial
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+    post:
+      tags: [Admin]
+      summary: Guarda el borrador de una ayuda
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantWrite'
+      responses:
+        '200':
+          description: Borrador guardado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants/{id}/publish:
+    post:
+      tags: [Admin]
+      summary: Publica el borrador de una ayuda
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionWrite'
+      responses:
+        '200':
+          description: Ayuda publicada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants/{id}/archive:
+    post:
+      tags: [Admin]
+      summary: Archiva editorialmente una ayuda y la oculta al publico
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionWrite'
+      responses:
+        '200':
+          description: Ayuda archivada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants/{id}/revisions:
+    get:
+      tags: [Admin]
+      summary: Lista las revisiones de una ayuda
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Revisiones editoriales
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorialRevisionList'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/admin/grants/{id}/restore:
+    post:
+      tags: [Admin]
+      summary: Restaura una revision de ayuda al borrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditorialRestore'
+      responses:
+        '200':
+          description: Revision copiada al borrador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs:
+    get:
+      tags: [Admin]
+      summary: Lista todos los estados editoriales de empleo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Procesos editoriales
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialList'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+    post:
+      tags: [Admin]
+      summary: Crea un proceso de empleo como borrador privado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobCreate'
+      responses:
+        '200':
+          description: Borrador creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs/{id}:
+    get:
+      tags: [Admin]
+      summary: Obtiene el estado editorial de un proceso
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Estado editorial
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+    post:
+      tags: [Admin]
+      summary: Guarda el borrador de un proceso
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobWrite'
+      responses:
+        '200':
+          description: Borrador guardado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs/{id}/publish:
+    post:
+      tags: [Admin]
+      summary: Publica el borrador de un proceso
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionWrite'
+      responses:
+        '200':
+          description: Proceso publicado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs/{id}/archive:
+    post:
+      tags: [Admin]
+      summary: Archiva editorialmente un proceso y lo oculta al publico
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionWrite'
+      responses:
+        '200':
+          description: Proceso archivado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs/{id}/revisions:
+    get:
+      tags: [Admin]
+      summary: Lista las revisiones de un proceso
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      responses:
+        '200':
+          description: Revisiones editoriales
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditorialRevisionList'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/admin/jobs/{id}/restore:
+    post:
+      tags: [Admin]
+      summary: Restaura una revision de empleo al borrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/EditorialId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditorialRestore'
+      responses:
+        '200':
+          description: Revision copiada al borrador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobEditorialDetail'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+  /api/admin/documents:
+    post:
+      tags: [Admin]
+      summary: Sube un PDF real y lo asocia al borrador indicado
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentUpload'
+            encoding:
+              file:
+                contentType: application/pdf
+      responses:
+        '200':
+          description: PDF privado asociado al borrador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentUploadResult'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '409':
+          $ref: '#/components/responses/Error'
+        '413':
+          $ref: '#/components/responses/Error'
+  /api/admin/documents/{documentId}:
+    get:
+      tags: [Admin]
+      summary: Descarga un PDF privado para revision
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: PDF privado
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+  parameters:
+    EditorialId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 160
+    DocumentId:
+      name: documentId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 180
+  responses:
+    Error:
+      description: Error de API
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  schemas:
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            fields:
+              type: object
+              additionalProperties:
+                type: string
+    Notice:
+      type: object
+      additionalProperties: false
+      required: [enabled, label, text, link]
+      properties:
+        enabled:
+          type: boolean
+        label:
+          type: string
+          minLength: 1
+          maxLength: 30
+        text:
+          type: string
+          minLength: 1
+          maxLength: 100
+        link:
+          type: string
+          enum: [/empleo, /vivienda, /servicios, /contacto, /ayudas-y-subvenciones]
+    Hero:
+      type: object
+      additionalProperties: false
+      required: [eyebrow, title, text]
+      properties:
+        eyebrow:
+          type: string
+          minLength: 1
+          maxLength: 70
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        text:
+          type: string
+          minLength: 1
+          maxLength: 240
+    Contact:
+      type: object
+      additionalProperties: false
+      required: [address, phone, email, schedule]
+      properties:
+        address:
+          type: string
+          minLength: 5
+          maxLength: 160
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 30
+        email:
+          type: string
+          format: email
+          maxLength: 160
+        schedule:
+          type: string
+          minLength: 5
+          maxLength: 120
+    SiteContent:
+      type: object
+      additionalProperties: false
+      required: [notice, hero, contact]
+      properties:
+        notice:
+          $ref: '#/components/schemas/Notice'
+        hero:
+          $ref: '#/components/schemas/Hero'
+        contact:
+          $ref: '#/components/schemas/Contact'
+    PublishedContent:
+      type: object
+      additionalProperties: false
+      required: [content, publishedAt, version]
+      properties:
+        content:
+          $ref: '#/components/schemas/SiteContent'
+        publishedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+    EditorState:
+      type: object
+      additionalProperties: false
+      required: [draft, published, publishedAt, version, hasUnpublishedChanges]
+      properties:
+        draft:
+          $ref: '#/components/schemas/SiteContent'
+        published:
+          $ref: '#/components/schemas/SiteContent'
+        publishedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          minimum: 1
+        hasUnpublishedChanges:
+          type: boolean
+    ContentWrite:
+      type: object
+      additionalProperties: false
+      required: [content, baseVersion]
+      properties:
+        content:
+          $ref: '#/components/schemas/SiteContent'
+        baseVersion:
+          type: integer
+          minimum: 1
+    AdminUser:
+      type: object
+      additionalProperties: false
+      required: [id, email, role]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin]
+    AuthSession:
+      type: object
+      additionalProperties: false
+      required: [token, expiresAt, user]
+      properties:
+        token:
+          type: string
+          minLength: 32
+        expiresAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/AdminUser'
+    RevisionSummary:
+      type: object
+      additionalProperties: false
+      required: [id, action, createdAt, createdBy]
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+          enum: [initial, publish, backup]
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/AdminUser'
+    Revision:
+      allOf:
+        - $ref: '#/components/schemas/RevisionSummary'
+        - type: object
+          required: [content]
+          properties:
+            content:
+              $ref: '#/components/schemas/SiteContent'
+    EditorialDocument:
+      type: object
+      additionalProperties: false
+      required: [id, title, description, pages, bytes, kind, source, url]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 180
+        title:
+          type: string
+          minLength: 1
+          maxLength: 220
+        description:
+          type: string
+          maxLength: 600
+        pages:
+          type: integer
+          minimum: 1
+          maximum: 10000
+          nullable: true
+        bytes:
+          type: integer
+          minimum: 1
+          maximum: 15728640
+          nullable: true
+        kind:
+          type: string
+          enum: [bases, formulario, listado, resolucion, resultado, otro]
+        source:
+          type: string
+          enum: [legacy, uploaded]
+        url:
+          type: string
+          minLength: 1
+          maxLength: 500
+    GrantInput:
+      type: object
+      additionalProperties: false
+      required: [id, category, title, summary, publicationDate, deadlineDate, deadlineLabel, note, contentUpdatedAt, sourceUrl, sourceLabel, icon, documents]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 160
+        category:
+          type: string
+          minLength: 1
+          maxLength: 120
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 1200
+        publicationDate:
+          type: string
+          format: date
+        deadlineDate:
+          type: string
+          format: date
+          nullable: true
+        deadlineLabel:
+          type: string
+          minLength: 1
+          maxLength: 100
+        note:
+          type: string
+          maxLength: 2400
+        contentUpdatedAt:
+          type: string
+          format: date
+          nullable: true
+        sourceUrl:
+          type: string
+          format: uri
+          maxLength: 1000
+          nullable: true
+        sourceLabel:
+          type: string
+          maxLength: 180
+        icon:
+          type: string
+          enum: [Accessibility, HeartHandshake, KeyRound, Building2, Megaphone]
+        documents:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/EditorialDocument'
+    JobInput:
+      type: object
+      additionalProperties: false
+      required: [id, title, description, publicationDate, deadlineDate, statusLabel, displayGroup, documents]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 160
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1200
+        publicationDate:
+          type: string
+          format: date
+          nullable: true
+        deadlineDate:
+          type: string
+          format: date
+          nullable: true
+        statusLabel:
+          type: string
+          minLength: 1
+          maxLength: 100
+        displayGroup:
+          type: string
+          enum: [current, archive]
+        documents:
+          type: array
+          maxItems: 150
+          items:
+            $ref: '#/components/schemas/EditorialDocument'
+    EditorialMetadata:
+      type: object
+      required: [version, status, hasUnpublishedChanges, createdAt, updatedAt, firstPublishedAt, lastPublishedAt, archivedAt]
+      properties:
+        version:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum: [draft, published, archived]
+        hasUnpublishedChanges:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        firstPublishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastPublishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        archivedAt:
+          type: string
+          format: date-time
+          nullable: true
+    GrantEditorialItem:
+      allOf:
+        - $ref: '#/components/schemas/EditorialMetadata'
+        - type: object
+          required: [draft, published]
+          properties:
+            draft:
+              $ref: '#/components/schemas/GrantInput'
+            published:
+              $ref: '#/components/schemas/GrantInput'
+              nullable: true
+    JobEditorialItem:
+      allOf:
+        - $ref: '#/components/schemas/EditorialMetadata'
+        - type: object
+          required: [draft, published]
+          properties:
+            draft:
+              $ref: '#/components/schemas/JobInput'
+            published:
+              $ref: '#/components/schemas/JobInput'
+              nullable: true
+    GrantPublicList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantInput'
+    GrantPublicDetail:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/GrantInput'
+    JobPublicList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobInput'
+    JobPublicDetail:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/JobInput'
+    GrantEditorialList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantEditorialItem'
+    GrantEditorialDetail:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/GrantEditorialItem'
+    JobEditorialList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobEditorialItem'
+    JobEditorialDetail:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/JobEditorialItem'
+    GrantCreate:
+      type: object
+      additionalProperties: false
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/GrantInput'
+    GrantWrite:
+      type: object
+      additionalProperties: false
+      required: [item, baseVersion]
+      properties:
+        item:
+          $ref: '#/components/schemas/GrantInput'
+        baseVersion:
+          type: integer
+          minimum: 1
+    JobCreate:
+      type: object
+      additionalProperties: false
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/JobInput'
+    JobWrite:
+      type: object
+      additionalProperties: false
+      required: [item, baseVersion]
+      properties:
+        item:
+          $ref: '#/components/schemas/JobInput'
+        baseVersion:
+          type: integer
+          minimum: 1
+    VersionWrite:
+      type: object
+      additionalProperties: false
+      required: [baseVersion]
+      properties:
+        baseVersion:
+          type: integer
+          minimum: 1
+    EditorialRestore:
+      type: object
+      additionalProperties: false
+      required: [revisionId, baseVersion]
+      properties:
+        revisionId:
+          type: string
+          minLength: 1
+        baseVersion:
+          type: integer
+          minimum: 1
+    EditorialRevisionSummary:
+      type: object
+      required: [id, action, createdAt, createdBy]
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+          enum: [initial, publish, backup, archive]
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/AdminUser'
+    EditorialRevisionList:
+      type: object
+      required: [revisions]
+      properties:
+        revisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/EditorialRevisionSummary'
+    DocumentUpload:
+      type: object
+      additionalProperties: false
+      required: [ownerType, ownerId, baseVersion, title, description, pages, kind, file]
+      properties:
+        ownerType:
+          type: string
+          enum: [grants, jobs]
+        ownerId:
+          type: string
+          minLength: 1
+          maxLength: 160
+        baseVersion:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+          maxLength: 220
+        description:
+          type: string
+          maxLength: 600
+        pages:
+          type: integer
+          minimum: 1
+          maximum: 10000
+          nullable: true
+        kind:
+          type: string
+          enum: [bases, formulario, listado, resolucion, resultado, otro]
+        file:
+          type: string
+          format: binary
+    DocumentUploadResult:
+      type: object
+      required: [document, item]
+      properties:
+        document:
+          $ref: '#/components/schemas/EditorialDocument'
+        item:
+          oneOf:
+            - $ref: '#/components/schemas/GrantEditorialItem'
+            - $ref: '#/components/schemas/JobEditorialItem'

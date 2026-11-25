@@ -1,0 +1,109 @@
+{
+  "base": "http://127.0.0.1:5194",
+  "checks": [
+    {
+      "name": "Datos iniciales de ayudas",
+      "passed": true,
+      "initialGrantCount": 4,
+      "initialGrantDocuments": 13
+    },
+    {
+      "name": "Datos iniciales de empleo",
+      "passed": true,
+      "initialJobCount": 7,
+      "initialJobDocuments": 49
+    },
+    {
+      "name": "Colección editorial privada",
+      "passed": true,
+      "status": 401
+    },
+    {
+      "name": "Acceso de administrador",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Nueva ayuda privada hasta publicar",
+      "passed": true,
+      "create": 200,
+      "public": 404
+    },
+    {
+      "name": "Falso PDF rechazado",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "name": "PDF excesivo rechazado",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "name": "PDF privado antes de publicar",
+      "passed": true,
+      "upload": 200,
+      "private": 200,
+      "public": 404
+    },
+    {
+      "name": "Ayuda y PDF visibles tras publicar",
+      "passed": true,
+      "publish": 200,
+      "item": 200,
+      "pdf": 200
+    },
+    {
+      "name": "Conflicto de versión en ayuda",
+      "passed": true,
+      "status": 409
+    },
+    {
+      "name": "Archivo editorial oculta ayuda y PDF",
+      "passed": true,
+      "archive": 200,
+      "item": 404,
+      "pdf": 404
+    },
+    {
+      "name": "Nueva convocatoria publicada",
+      "passed": true,
+      "create": 200,
+      "publish": 200,
+      "count": 8
+    },
+    {
+      "name": "Resultado permanece privado antes de publicar",
+      "passed": true,
+      "upload": 200,
+      "publicPdf": 404
+    },
+    {
+      "name": "Resultado agregado a la misma convocatoria",
+      "passed": true,
+      "publish": 200,
+      "count": 8,
+      "pdf": 200
+    },
+    {
+      "name": "Restauración cambia solo el borrador",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Limpieza de empleo y resultado",
+      "passed": true,
+      "archive": 200,
+      "count": 7,
+      "pdf": 404
+    }
+  ],
+  "cleanup": [
+    {
+      "type": "logout",
+      "passed": true,
+      "status": 204
+    }
+  ],
+  "passed": true
+}

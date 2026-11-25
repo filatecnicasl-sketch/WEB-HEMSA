@@ -1,0 +1,136 @@
+{
+  "images": [
+    {
+      "source": "1_Exterior.png",
+      "output": "public\\images\\vivienda\\ronda-estero-81-exterior.webp",
+      "original_dimensions": [
+        1920,
+        1080
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 181250
+    },
+    {
+      "source": "2_Plaza.png",
+      "output": "public\\images\\vivienda\\ronda-estero-81-plaza-2.webp",
+      "original_dimensions": [
+        1920,
+        1080
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 91114
+    },
+    {
+      "source": "3_Plaza.png",
+      "output": "public\\images\\vivienda\\ronda-estero-81-plaza-3.webp",
+      "original_dimensions": [
+        1920,
+        1080
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 94702
+    },
+    {
+      "source": "4_Plaza.png",
+      "output": "public\\images\\vivienda\\ronda-estero-81-plaza-4.webp",
+      "original_dimensions": [
+        1920,
+        1080
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 72766
+    },
+    {
+      "source": "Entrada_M02.jpg",
+      "output": "public\\images\\vivienda\\la-marina-132-entrada.webp",
+      "original_dimensions": [
+        3840,
+        2160
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 128362
+    },
+    {
+      "source": "Interior_M02.jpg",
+      "output": "public\\images\\vivienda\\la-marina-132-interior.webp",
+      "original_dimensions": [
+        3840,
+        2160
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 186666
+    },
+    {
+      "source": "PatioContra_M02.jpg",
+      "output": "public\\images\\vivienda\\la-marina-132-patio.webp",
+      "original_dimensions": [
+        3840,
+        2160
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 238112
+    },
+    {
+      "source": "Plaza_M02.jpg",
+      "output": "public\\images\\vivienda\\la-marina-132-fachada.webp",
+      "original_dimensions": [
+        3840,
+        2160
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 136364
+    },
+    {
+      "source": "Rotonda_M02.jpg",
+      "output": "public\\images\\vivienda\\la-marina-132-rotonda.webp",
+      "original_dimensions": [
+        3840,
+        2160
+      ],
+      "web_dimensions": [
+        1600,
+        900
+      ],
+      "bytes": 140986
+    }
+  ],
+  "videos": [
+    {
+      "source": "132ViviendasVPO_Hemsa_mods.mp4",
+      "source_bytes": 143296277,
+      "output": "public\\videos\\vivienda\\la-marina-132.mp4",
+      "bytes": 12931612
+    },
+    {
+      "source": "436950 SAN FERNANDO UTE SERROT HERYSAN 2026 ORIGEN CON DRON.mp4",
+      "source_bytes": 594581023,
+      "output": "public\\videos\\vivienda\\ronda-estero-81-dron.mp4",
+      "bytes": 62384360
+    }
+  ],
+  "source_files_untouched": true
+}

@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: hemsa-san-fernando
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: HEMSA_HOST
+        value: 0.0.0.0
+      - key: HEMSA_DATA_DIR
+        value: /var/data
+      - key: HEMSA_ADMIN_EMAIL
+        sync: false
+      - key: HEMSA_ADMIN_PASSWORD
+        sync: false
+      - key: HEMSA_SMTP_ENABLED
+        value: "false"
+      - key: HEMSA_SMTP_HOST
+        value: smtp.office365.com
+      - key: HEMSA_SMTP_PORT
+        value: "587"
+      - key: HEMSA_SMTP_SECURITY
+        value: starttls
+      - key: HEMSA_SMTP_USERNAME
+        value: notificaciones@hemsasanfernando.es
+      - key: HEMSA_SMTP_PASSWORD
+        sync: false
+      - key: HEMSA_SMTP_SENDER
+        value: notificaciones@hemsasanfernando.es
+      - key: HEMSA_MAIL_RECIPIENT
+        value: correo@hemsasanfernando.es

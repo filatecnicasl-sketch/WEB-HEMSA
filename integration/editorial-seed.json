@@ -1,0 +1,767 @@
+{
+  "grants": [
+    {
+      "id": "accesibilidad-viviendas-2023",
+      "category": "Accesibilidad · Resolución definitiva",
+      "title": "Subvenciones para mejorar la accesibilidad en viviendas",
+      "summary": "Convocatoria 2023 para actuaciones que mejoren la accesibilidad en viviendas y edificios residenciales colectivos. Se incorporan la propuesta provisional, la resolución definitiva para Cádiz y los formularios asociados.",
+      "publicationDate": "2023-10-24",
+      "deadlineDate": "2024-03-04",
+      "deadlineLabel": "Fin de solicitudes",
+      "note": "El plazo de presentación estuvo abierto del 5 de febrero al 4 de marzo de 2024. La resolución definitiva de concesión de la Delegación Territorial de Cádiz está firmada el 6 de noviembre de 2025.",
+      "contentUpdatedAt": "2025-11-06",
+      "sourceUrl": "https://www.juntadeandalucia.es/boja/2023/204/2",
+      "sourceLabel": "Consultar la convocatoria en el BOJA",
+      "icon": "Accessibility",
+      "documents": [
+        {
+          "id": "accesibilidad-viviendas-2023-doc-01",
+          "title": "Resolución definitiva de concesión · Cádiz",
+          "description": "Relación definitiva de solicitudes y subvenciones concedidas.",
+          "pages": 25,
+          "bytes": null,
+          "kind": "resolucion",
+          "source": "legacy",
+          "url": "/documents/vivienda/resolucion-definitiva-de-concesion.pdf"
+        },
+        {
+          "id": "accesibilidad-viviendas-2023-doc-02",
+          "title": "Propuesta provisional de resolución",
+          "description": "Propuesta, trámite de audiencia y relaciones provisionales.",
+          "pages": 11,
+          "bytes": null,
+          "kind": "resolucion",
+          "source": "legacy",
+          "url": "/documents/vivienda/propuesta-provisional-de-resolucion-17.pdf"
+        },
+        {
+          "id": "accesibilidad-viviendas-2023-doc-03",
+          "title": "Bases reguladoras",
+          "description": "Orden de 1 de agosto de 2023 y requisitos de las líneas 1 y 2.",
+          "pages": 37,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/boja23-150-7-agosto-2023.pdf"
+        },
+        {
+          "id": "accesibilidad-viviendas-2023-doc-04",
+          "title": "Anexo II · Alegaciones y aceptación",
+          "description": "Formulario para alegaciones, aceptación y presentación de documentos.",
+          "pages": 5,
+          "bytes": null,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/vivienda/anexo-ii.pdf"
+        },
+        {
+          "id": "accesibilidad-viviendas-2023-doc-05",
+          "title": "Resolución de desistimiento y archivo",
+          "description": "Resolución por falta de subsanación en tiempo y forma.",
+          "pages": 4,
+          "bytes": null,
+          "kind": "resolucion",
+          "source": "legacy",
+          "url": "/documents/vivienda/resolucion-de-desistimiento-3.pdf"
+        }
+      ]
+    },
+    {
+      "id": "ayudas-alquiler-vulnerable-2024",
+      "category": "Alquiler · Convocatoria 2024",
+      "title": "Ayudas al alquiler para personas especialmente vulnerables",
+      "summary": "Ayudas destinadas a víctimas de violencia de género, personas objeto de desahucio de su vivienda habitual, personas sin hogar y otras personas en situación de especial vulnerabilidad.",
+      "publicationDate": "2024-06-25",
+      "deadlineDate": "2024-07-26",
+      "deadlineLabel": "Fin del plazo mensual",
+      "note": "La convocatoria establece un mes desde el día siguiente a la publicación del extracto en el BOJA. El periodo subvencionable comprende del 1 de enero al 31 de diciembre de 2024. El plazo podía finalizar antes si se agotaba el crédito.",
+      "contentUpdatedAt": null,
+      "sourceUrl": null,
+      "sourceLabel": "",
+      "icon": "HeartHandshake",
+      "documents": [
+        {
+          "id": "ayudas-alquiler-vulnerable-2024-doc-01",
+          "title": "Orden de convocatoria 2024",
+          "description": "Texto completo de la convocatoria y formularios anexos.",
+          "pages": 22,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/orden-convocatoria-ayudas-al-alquiler-vulnerables-2024.pdf"
+        },
+        {
+          "id": "ayudas-alquiler-vulnerable-2024-doc-02",
+          "title": "Extracto oficial de la convocatoria",
+          "description": "Publicación en el BOJA número 122, con el plazo de solicitudes.",
+          "pages": 3,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/extracto-ayudas-al-alquiler-vulnerables-convocatoria-2024.pdf"
+        },
+        {
+          "id": "ayudas-alquiler-vulnerable-2024-doc-03",
+          "title": "Bases reguladoras",
+          "description": "Requisitos, conceptos subvencionables y tramitación de las ayudas.",
+          "pages": 17,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/bbrr-ayudas-al-alquiler-vulnerables.pdf"
+        },
+        {
+          "id": "ayudas-alquiler-vulnerable-2024-doc-04",
+          "title": "Resumen informativo de las ayudas",
+          "description": "Documento divulgativo sobre las ayudas al alquiler.",
+          "pages": 3,
+          "bytes": null,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/vivienda/resumen-ayudas-alquiler.pdf"
+        }
+      ]
+    },
+    {
+      "id": "garantia-vivienda-joven",
+      "category": "Primera vivienda · Jóvenes",
+      "title": "Programa Garantía Vivienda Joven",
+      "summary": "Programa dirigido a personas mayores de edad y hasta 35 años incluidos para solicitar una garantía de la Junta de Andalucía destinada a financiar la adquisición de su primera vivienda habitual.",
+      "publicationDate": "2023-09-14",
+      "deadlineDate": "2024-08-18",
+      "deadlineLabel": "Fin del plazo inicial",
+      "note": "Las solicitudes se tramitaban ante las entidades financieras colaboradoras. El documento oficial establece un plazo inicial de un año para las hipotecas vinculadas, sin perjuicio de una posible prórroga de los convenios.",
+      "contentUpdatedAt": null,
+      "sourceUrl": null,
+      "sourceLabel": "",
+      "icon": "KeyRound",
+      "documents": [
+        {
+          "id": "garantia-vivienda-joven-doc-01",
+          "title": "Resolución y entidades financieras adheridas",
+          "description": "Convocatoria, condiciones generales y entidades colaboradoras.",
+          "pages": 3,
+          "bytes": null,
+          "kind": "resolucion",
+          "source": "legacy",
+          "url": "/documents/vivienda/resolucion-publicidad-entidades-financieras.pdf"
+        }
+      ]
+    },
+    {
+      "id": "rehabilitacion-eficiencia-2022",
+      "category": "Rehabilitación · Eficiencia energética",
+      "title": "Ayudas para rehabilitar edificios y mejorar la eficiencia energética",
+      "summary": "Convocatoria 2022 para la rehabilitación a nivel de edificio, la mejora de la eficiencia energética en viviendas, el libro del edificio existente y la redacción de proyectos de rehabilitación.",
+      "publicationDate": "2022-10-03",
+      "deadlineDate": "2024-12-26",
+      "deadlineLabel": "Fin del plazo ampliado",
+      "note": "El plazo original fue del 17 de octubre de 2022 al 30 de junio de 2023. La información oficial de la Junta de Andalucía recoge su ampliación hasta el 26 de diciembre de 2024, inclusive.",
+      "contentUpdatedAt": null,
+      "sourceUrl": "https://www.juntadeandalucia.es/organismos/viviendajuventudyordenaciondelterritorio/areas/vivienda-rehabilitacion/plan-eco-vivienda/paginas/plan-eco-edif-p3.html",
+      "sourceLabel": "Consultar el plazo publicado por la Junta",
+      "icon": "Building2",
+      "documents": [
+        {
+          "id": "rehabilitacion-eficiencia-2022-doc-01",
+          "title": "Orden de convocatoria",
+          "description": "Convocatoria completa, requisitos, cuantías y formularios.",
+          "pages": 75,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/boja22-190-00075-15324-01-00268595.pdf"
+        },
+        {
+          "id": "rehabilitacion-eficiencia-2022-doc-02",
+          "title": "Extracto oficial de la convocatoria",
+          "description": "Publicación resumida en el BOJA número 190.",
+          "pages": 6,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/boja22-190-00006-15327-01-00268599.pdf"
+        },
+        {
+          "id": "rehabilitacion-eficiencia-2022-doc-03",
+          "title": "Bases reguladoras",
+          "description": "Bases de las líneas de rehabilitación y eficiencia energética.",
+          "pages": 86,
+          "bytes": null,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/vivienda/boja22-113-00086-9866-01-00263152.pdf"
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "id": "bolsa-auxiliar-2026-octubre",
+      "title": "Auxiliar SAD · Convocatoria 2026",
+      "description": "Anuncio, bases y formulario de solicitud.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Convocatoria 2026",
+      "displayGroup": "current",
+      "documents": [
+        {
+          "id": "bolsa-auxiliar-2026-octubre-doc-01",
+          "title": "Anuncio y apertura de plazo",
+          "description": "",
+          "pages": 1,
+          "bytes": 29128,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/anuncio-y-apertura-plazo-convocatoria-personal-auxiliar-2.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2026-octubre-doc-02",
+          "title": "Base reguladora",
+          "description": "",
+          "pages": 19,
+          "bytes": 151539,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/bases-reguladoras-auxiliar-sad-hemsa-2026-v5-8dcd5554.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2026-octubre-doc-03",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 44057,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/solicitud-auxiliares-sad-hemsa-2026-borrador-70c84ba7.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2026-octubre-doc-04",
+          "title": "¿Qué hacer si no tengo titulación ni acreditación profesional?",
+          "description": "",
+          "pages": 1,
+          "bytes": 82284,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/que-hacer-2.pdf"
+        }
+      ]
+    },
+    {
+      "id": "bolsa-coordinador-2026-octubre",
+      "title": "Coordinación SAD · Convocatoria 2026",
+      "description": "Anuncio, bases y formulario de solicitud.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Convocatoria 2026",
+      "displayGroup": "current",
+      "documents": [
+        {
+          "id": "bolsa-coordinador-2026-octubre-doc-01",
+          "title": "Anuncio y apertura de plazo",
+          "description": "",
+          "pages": 1,
+          "bytes": 28793,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/anuncio-y-apertura-plazo-convocatoria-personal-coordinacion-1.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2026-octubre-doc-02",
+          "title": "Base reguladora",
+          "description": "",
+          "pages": 19,
+          "bytes": 166042,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/bases-reguladoras-coordinacion-sad-hemsa-2026-v2-c60ef1c0.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2026-octubre-doc-03",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 42594,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/solicitud-coordinacion-sad-hemsa-2026-borrador-a570e55c.pdf"
+        }
+      ]
+    },
+    {
+      "id": "bolsa-auxiliar-2025",
+      "title": "Auxiliar SAD · Convocatoria 2025",
+      "description": "Bases, listados y resolución del proceso.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Proceso anterior",
+      "displayGroup": "archive",
+      "documents": [
+        {
+          "id": "bolsa-auxiliar-2025-doc-01",
+          "title": "Base de la convocatoria",
+          "description": "",
+          "pages": 23,
+          "bytes": 635442,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/convocatoria-auxiliar-2025-3df90711.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-02",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 351970,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/formulario-auxiliar-solic.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-03",
+          "title": "Lista definitiva admitidos/as y Excluidos/as - Fase 1",
+          "description": "",
+          "pages": 4,
+          "bytes": 224715,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/aux-sad-acta-admitidos-10-09-2025-1.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-04",
+          "title": "Listado admitidos/as y Excluidos/as - Fase 1",
+          "description": "",
+          "pages": 4,
+          "bytes": 220425,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/acta-auxiliares-08-07.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-05",
+          "title": "Listado admitidos/as y Excluidos/as - Fase 2",
+          "description": "",
+          "pages": 3,
+          "bytes": 220210,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/aux-sad-acta-admitidos-20-11-2025.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-06",
+          "title": "Resolución final y listado definitivo",
+          "description": "",
+          "pages": 5,
+          "bytes": 267913,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/lista-definitiva-y-resolucion-proceso-auxiliares-2025.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-2025-doc-07",
+          "title": "¿Qué hacer si no tengo titulación ni acreditación profesional?",
+          "description": "",
+          "pages": 1,
+          "bytes": 82284,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/que-hacer-2.pdf"
+        }
+      ]
+    },
+    {
+      "id": "bolsa-coordinador-2025",
+      "title": "Coordinación SAD · Convocatoria 2025",
+      "description": "Bases, listados y resolución del proceso.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Proceso anterior",
+      "displayGroup": "archive",
+      "documents": [
+        {
+          "id": "bolsa-coordinador-2025-doc-01",
+          "title": "Bases de la convocatoria",
+          "description": "",
+          "pages": 20,
+          "bytes": 624830,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/convocatoria-coordinacion-2025-3561c1e6.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-02",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 351746,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/formulario-coord-solicitud.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-03",
+          "title": "Lista definitiva Admitido/as y excluido/as fase I",
+          "description": "",
+          "pages": 2,
+          "bytes": 189532,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-25-07-2025-002.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-04",
+          "title": "Lista definitiva Admitido/as y excluido/as fase I",
+          "description": "",
+          "pages": 1,
+          "bytes": 178711,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-final-29-08-2025-003.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-05",
+          "title": "Lista definitiva Admitido/as y excluido/as fase II 15/09/2025",
+          "description": "",
+          "pages": 1,
+          "bytes": 177518,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-def-15-09-2025.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-06",
+          "title": "Listado de admitidos y no admitidos fase I",
+          "description": "",
+          "pages": 2,
+          "bytes": 201498,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-04-07-2025.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-2025-doc-07",
+          "title": "Relación final y definitiva",
+          "description": "",
+          "pages": 2,
+          "bytes": 56817,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/resolucion-proceso-coordinadora-2025-modificacion.pdf"
+        }
+      ]
+    },
+    {
+      "id": "bolsa-auxiliar",
+      "title": "Auxiliar SAD · Bolsa de empleo 2024–2026",
+      "description": "Bases, formularios y sucesivos listados de la bolsa.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Proceso anterior",
+      "displayGroup": "archive",
+      "documents": [
+        {
+          "id": "bolsa-auxiliar-doc-01",
+          "title": "Base de la convocatoria",
+          "description": "",
+          "pages": 18,
+          "bytes": 643267,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/bases-reguladoras-bolsa-de-empleo-temporal-de-auxiliares-sad-hemsa.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-02",
+          "title": "Cuarta lista definitiva de admitidos/as (Octubre 2024)",
+          "description": "",
+          "pages": 15,
+          "bytes": 660289,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/cuarta-lista-definitiva-octubre-2024.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-03",
+          "title": "Cuarta lista provisional de admitidos/as (Octubre 2024)",
+          "description": "",
+          "pages": 15,
+          "bytes": 630884,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/cuarta-lista-provisional-octubre-2024.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-04",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 431442,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/formulario-solicitud-bolsa-sad.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-05",
+          "title": "Lista definitiva de admitidos/as (mayo 2024)",
+          "description": "",
+          "pages": 6,
+          "bytes": 518273,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/listas-provisionales-de-admitidos.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-06",
+          "title": "Primera lista Provisional de admitidos/as",
+          "description": "",
+          "pages": 11,
+          "bytes": 322194,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/primer-listado-definitivo-mayo-2024-v2.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-07",
+          "title": "Quinta lista definitiva de admitidos/as (Febrero 2025)",
+          "description": "",
+          "pages": 17,
+          "bytes": 411964,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/quinta-lista-definitiva-febrero-2025.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-08",
+          "title": "Quinta lista provisional de admitidos/as (Diciembre 2024)",
+          "description": "",
+          "pages": 15,
+          "bytes": 651298,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/quinta-lista-provisional-diciembre-2024.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-09",
+          "title": "Segunda lista Definitiva de admitidos/as (Julio 2024)",
+          "description": "",
+          "pages": 12,
+          "bytes": 334902,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/segunda-lista-definitiva-julio-2024.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-10",
+          "title": "Segunda lista Provisional de admitidos/as (Junio 2024)",
+          "description": "",
+          "pages": 2,
+          "bytes": 471721,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/segunda-lista-provisional-admitidos.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-11",
+          "title": "Septima lista definitiva de admitidos/as (Marzo 2026)",
+          "description": "",
+          "pages": 13,
+          "bytes": 308990,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/septima-lista-definitiva-marzo-2026.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-12",
+          "title": "Sexta lista definitiva de admitidos/as (Mayo 2025)",
+          "description": "",
+          "pages": 17,
+          "bytes": 622558,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/sexta-lista-definitiva-mayo-2025-v1-5a8138f1.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-13",
+          "title": "Tercera lista definitiva de admitidos/as (Septiembre 2024)",
+          "description": "",
+          "pages": 13,
+          "bytes": 341882,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/tercera-lista-definitiva-septiembre-2024.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-14",
+          "title": "Tercera lista provisional de admitidos/as (Agosto 2024)",
+          "description": "",
+          "pages": 5,
+          "bytes": 523057,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/tercer-lista-provisional-admitidos-102d8c60.pdf"
+        },
+        {
+          "id": "bolsa-auxiliar-doc-15",
+          "title": "¿Qué hacer si no tengo titulación ni acreditación profesional?",
+          "description": "",
+          "pages": 1,
+          "bytes": 82284,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/que-hacer-2.pdf"
+        }
+      ]
+    },
+    {
+      "id": "bolsa-coordinador",
+      "title": "Coordinación SAD · Bolsa de empleo 2024–2025",
+      "description": "Bases, formularios y sucesivos listados de la bolsa.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Proceso anterior",
+      "displayGroup": "archive",
+      "documents": [
+        {
+          "id": "bolsa-coordinador-doc-01",
+          "title": "Bases de la convocatoria",
+          "description": "",
+          "pages": 18,
+          "bytes": 543811,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/bases-coordinador-sad-hemsa-mza0pkfnqamam8byrtpj.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-02",
+          "title": "COORD SAD ACTA ADMITIDOS 26-08-2024",
+          "description": "",
+          "pages": 1,
+          "bytes": 273392,
+          "kind": "otro",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-26-08-2024.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-03",
+          "title": "Formulario de solicitud",
+          "description": "",
+          "pages": 2,
+          "bytes": 342854,
+          "kind": "formulario",
+          "source": "legacy",
+          "url": "/documents/empleo/formulario-solicitud-coord-sad-levhwnryo0zvrqlmbtq0.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-04",
+          "title": "Lista de admitidos/as Fase 1",
+          "description": "",
+          "pages": 1,
+          "bytes": 197819,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-07-06-2024.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-05",
+          "title": "Lista de admitidos/as · 24/10/2024",
+          "description": "",
+          "pages": 1,
+          "bytes": 189445,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-24-10-2024-002.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-06",
+          "title": "Lista final definitiva admitidos/as Fase 2. Primer proceso de la bolsa permanente",
+          "description": "",
+          "pages": 1,
+          "bytes": 195630,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-17-09-2024.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-07",
+          "title": "Lista final definitiva admitidos/as Fase 2. Segundo proceso de la bolsa permanente",
+          "description": "",
+          "pages": 1,
+          "bytes": 194496,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-20-11-2024.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-08",
+          "title": "Lista final definitiva admitidos/as Fase 2. Tercer proceso de la bolsa permanente",
+          "description": "",
+          "pages": 1,
+          "bytes": 510789,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-29-04-2025-dfa585ee.pdf"
+        },
+        {
+          "id": "bolsa-coordinador-doc-09",
+          "title": "Primera lista Provisional de admitidos/as",
+          "description": "",
+          "pages": 1,
+          "bytes": 286010,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/coord-sad-acta-admitidos-28-05-2024.pdf"
+        }
+      ]
+    },
+    {
+      "id": "promoción-interna-coordinación",
+      "title": "Promoción interna de coordinación",
+      "description": "Documentación del proceso de promoción interna.",
+      "publicationDate": null,
+      "deadlineDate": null,
+      "statusLabel": "Proceso anterior",
+      "displayGroup": "archive",
+      "documents": [
+        {
+          "id": "promoción-interna-coordinación-doc-01",
+          "title": "Acta final proceso selectivo Responsable de Coordinación",
+          "description": "",
+          "pages": 1,
+          "bytes": 432325,
+          "kind": "resolucion",
+          "source": "legacy",
+          "url": "/documents/empleo/acta-final.pdf"
+        },
+        {
+          "id": "promoción-interna-coordinación-doc-02",
+          "title": "Bases Convocatoria Promoción Interna Responsable de Coordinación de servicio de ayuda a domicilio.",
+          "description": "",
+          "pages": 15,
+          "bytes": 605421,
+          "kind": "bases",
+          "source": "legacy",
+          "url": "/documents/empleo/bases-reguladoras-responsable.pdf"
+        },
+        {
+          "id": "promoción-interna-coordinación-doc-03",
+          "title": "Lista definitiva de admitidos responsable de coordinación de servicio de ayuda a domicilio",
+          "description": "",
+          "pages": 1,
+          "bytes": 512336,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/listado-definitivo-admitidos.pdf"
+        },
+        {
+          "id": "promoción-interna-coordinación-doc-04",
+          "title": "Listado Provisional de admitidos de convocatoria promoción interna responsable de coordinación",
+          "description": "",
+          "pages": 1,
+          "bytes": 500683,
+          "kind": "listado",
+          "source": "legacy",
+          "url": "/documents/empleo/listado-provisional-admitidos.pdf"
+        }
+      ]
+    }
+  ]
+}

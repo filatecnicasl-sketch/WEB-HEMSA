@@ -1,0 +1,268 @@
+{
+  "created_at": "2026-11-24T19:09:45.648797+01:00",
+  "scope": "Clasificación documental y visual de los 11 archivos originales. No integra ni modifica contenido de la web.",
+  "web_files_modified": false,
+  "file_count": 11,
+  "image_count": 9,
+  "video_count": 2,
+  "promotions": {
+    "la-marina-132": {
+      "name": "Residencial La Marina — 132 viviendas protegidas",
+      "units": 132,
+      "location": "Ronda del Estero y avenida de La Marina, San Fernando",
+      "tenure": "Venta",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/"
+      ]
+    },
+    "ronda-estero-81": {
+      "name": "Ronda del Estero — 81 viviendas protegidas",
+      "units": 81,
+      "location": "Ronda del Estero, San Fernando",
+      "tenure": "Alquiler con opción a compra",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/"
+      ]
+    }
+  },
+  "files": [
+    {
+      "file": "132ViviendasVPO_Hemsa_mods.mp4",
+      "type": "video",
+      "bytes": 143296277,
+      "sha256": "c7804580958184684e38878e5ca1ae7b8c624d8020d165237dbe2c8d33f1363c",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Vídeo promocional de 72 segundos: entorno de San Fernando, ubicación, fachadas, zonas comunes, terraza, interior y logotipos de HEMSA y San Fernando.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Vídeo principal de la ficha de Residencial La Marina.",
+      "confirmation_basis": "El nombre identifica 132 viviendas VPO y sus fotogramas reproducen la arquitectura del grupo M02; la vista de zonas comunes coincide con PatioContra_M02.jpg.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/previews/video-1-contacto.jpg",
+        "migration/media-inventory/references/infografia-132.jpeg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\132ViviendasVPO_Hemsa_mods.mp4",
+      "preview": "migration/media-inventory/previews/video-1-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "1_Exterior.png",
+      "type": "image",
+      "bytes": 3466186,
+      "sha256": "cc712018a4b24b6164bb4a63789892ca5cec573722e1e93e4fae1d8c7f6a9c00",
+      "promotion_id": "ronda-estero-81",
+      "promotion": "Ronda del Estero — 81 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render exterior desde la calle del conjunto blanco y gris.",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "proposed_use": "Imagen de portada o primera imagen de la galería de las 81 viviendas.",
+      "confirmation_basis": "La fachada y la configuración del edificio coinciden con la obra real identificada como 81 viviendas en el vídeo con dron. También aparecía en la antigua página de garajes y trasteros de Ronda del Estero.",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/",
+        "research/garajes-y-trasteros.html:557-559",
+        "research/garajes-y-trasteros.html:1212",
+        "migration/media-inventory/previews/video-2-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\1_Exterior.png",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "2_Plaza.png",
+      "type": "image",
+      "bytes": 2886861,
+      "sha256": "6a9c878026708dd2c60e7b1dd4187684926479a92c07fcd17398a2cf54e21c61",
+      "promotion_id": "ronda-estero-81",
+      "promotion": "Ronda del Estero — 81 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render del patio o plaza interior del conjunto blanco y gris.",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "proposed_use": "Galería de zonas comunes de las 81 viviendas.",
+      "confirmation_basis": "Las galerías abiertas, fachadas blancas y grises y patio interior coinciden con las imágenes de obra del vídeo identificado como 81 viviendas.",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/",
+        "migration/media-inventory/previews/fotografias-contacto.jpg",
+        "migration/media-inventory/previews/video-2-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\2_Plaza.png",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "3_Plaza.png",
+      "type": "image",
+      "bytes": 2845369,
+      "sha256": "2908e3b0680c2c4f38e534c7d0df7aad1ed2310ae2934c7881dc005295d8e5f2",
+      "promotion_id": "ronda-estero-81",
+      "promotion": "Ronda del Estero — 81 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render del patio o plaza interior del conjunto blanco y gris desde otro ángulo.",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "proposed_use": "Galería de zonas comunes de las 81 viviendas.",
+      "confirmation_basis": "Pertenece al mismo conjunto arquitectónico que 1_Exterior, 2_Plaza y 4_Plaza; sus galerías y fachadas coinciden con la obra de 81 viviendas del vídeo con dron. La antigua portada enlazaba esta imagen con venta-vivienda.",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/",
+        "original-home.html:1016",
+        "migration/media-inventory/previews/video-2-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\3_Plaza.png",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "4_Plaza.png",
+      "type": "image",
+      "bytes": 2758093,
+      "sha256": "38f4b212c17b0145347ad426acff1462691d56afc2ee86802a7a1d362c1ec449",
+      "promotion_id": "ronda-estero-81",
+      "promotion": "Ronda del Estero — 81 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render frontal del patio interior y de las galerías del conjunto blanco y gris.",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "proposed_use": "Galería de zonas comunes de las 81 viviendas.",
+      "confirmation_basis": "Las galerías y fachadas coinciden con el vídeo de obra de 81 viviendas. La web antigua usaba esta misma imagen en la página de promociones de Ronda del Estero.",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/",
+        "research/venta-vivienda.html:1137-1154",
+        "migration/media-inventory/previews/video-2-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\4_Plaza.png",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "Entrada_M02.jpg",
+      "type": "image",
+      "bytes": 4611364,
+      "sha256": "6119646f7647421b9695c335de6cd12f50a784dc815fcf49d58e03dddc524dd8",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render del acceso y exterior del conjunto blanco con zócalo y elementos marrones/anaranjados.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Imagen de acceso en la galería de Residencial La Marina.",
+      "confirmation_basis": "Pertenece al grupo M02, cuya arquitectura aparece en el vídeo de 132 viviendas; la infografía pública de La Marina coincide exactamente con Plaza_M02.jpg del mismo conjunto.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/references/infografia-132.jpeg",
+        "migration/media-inventory/previews/video-1-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\Entrada_M02.jpg",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "Interior_M02.jpg",
+      "type": "image",
+      "bytes": 780090,
+      "sha256": "56877112e8c70d085274b6a1cf0ca5ffe6cd39e30d65260571340724b959f4d6",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render de una zona común interior con accesos señalados como 6 y 2.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Galería de zonas comunes de Residencial La Marina.",
+      "confirmation_basis": "Pertenece al conjunto M02 identificado como La Marina; los números de acceso son compatibles con los seis edificios descritos para la promoción de 132 viviendas.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/references/infografia-132.jpeg",
+        "migration/media-inventory/previews/video-1-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\Interior_M02.jpg",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "PatioContra_M02.jpg",
+      "type": "image",
+      "bytes": 927597,
+      "sha256": "b86d8d4ecbce222707c2a148dac4ce75949e24259c64fccb2928e2c4fd54440b",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render del recorrido peatonal y patio interior, con el acceso 2 visible.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Galería de patio y zonas comunes de Residencial La Marina.",
+      "confirmation_basis": "La misma vista y arquitectura aparecen en el fotograma 00:28 del vídeo de 132 viviendas; el grupo M02 coincide con la infografía pública de La Marina.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/previews/video-1-contacto.jpg",
+        "migration/media-inventory/references/infografia-132.jpeg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\PatioContra_M02.jpg",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "Plaza_M02.jpg",
+      "type": "image",
+      "bytes": 505655,
+      "sha256": "ec140d3bdd9eb21ad1e0b2c1a9ff7f7690ac8e183c60446ec69aa8050ba03310",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render exterior de un edificio blanco con balcones oscuros y zócalo marrón.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Imagen principal o de fachada en la ficha de Residencial La Marina.",
+      "confirmation_basis": "Coincide con la infografía publicada expresamente como promoción de 132 viviendas de Residencial La Marina.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/references/infografia-132.jpeg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\Plaza_M02.jpg",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "Rotonda_M02.jpg",
+      "type": "image",
+      "bytes": 536593,
+      "sha256": "23c829517562a2126fa47b3177f778ec6c9be84dd37053d93200ffb15be9f622",
+      "promotion_id": "la-marina-132",
+      "promotion": "Residencial La Marina — 132 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Render exterior del conjunto desde la rotonda, con fachadas blancas y marrones.",
+      "proposed_section": "Vivienda > Promociones > Residencial La Marina (132 viviendas)",
+      "proposed_use": "Imagen de ubicación y exterior en la galería de Residencial La Marina.",
+      "confirmation_basis": "Pertenece al grupo M02; la misma arquitectura y perspectiva de conjunto aparecen en el vídeo de 132 viviendas, y Plaza_M02.jpg coincide con la infografía pública de La Marina.",
+      "evidence": [
+        "https://www.elcastillodesanfernando.es/2026/10/san-fernando-adjudica-por-186-millones-las-obras-de-las-132-viviendas-protegidas-de-residencial-la-marina/",
+        "migration/media-inventory/references/infografia-132.jpeg",
+        "migration/media-inventory/previews/video-1-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\Rotonda_M02.jpg",
+      "preview": "migration/media-inventory/previews/fotografias-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    },
+    {
+      "file": "436950 SAN FERNANDO UTE SERROT HERYSAN 2026 ORIGEN CON DRON.mp4",
+      "type": "video",
+      "bytes": 594581023,
+      "sha256": "decdfe14dbb78a39405a9181c0889ac2a5e32fc3b00e07ded79dbdc0de81c109",
+      "promotion_id": "ronda-estero-81",
+      "promotion": "Ronda del Estero — 81 viviendas protegidas",
+      "association_status": "confirmada",
+      "content": "Vídeo con dron de 205,12 segundos (aprox. 3:25): evolución y vistas aéreas de la obra, con logotipos de Serrot, Herysan, HEMSA y San Fernando.",
+      "proposed_section": "Vivienda > Promociones > Ronda del Estero (81 viviendas)",
+      "proposed_use": "Vídeo de obra y recorrido con dron en la ficha de las 81 viviendas.",
+      "confirmation_basis": "El fotograma inicial dice literalmente 'Construcción de 81 viviendas protegidas'. Herysan confirma que ejecutó con Serrot esta promoción de HEMSA en Ronda del Estero.",
+      "evidence": [
+        "https://herysan2007.com/formalizada-la-adjudicacion-de-81-viviendas-en-ronda-del-estero/",
+        "migration/media-inventory/previews/video-2-contacto.jpg"
+      ],
+      "backup_path": "C:\\Users\\fbmagp\\Documents\\kimi\\Workspaces\\Web Hemsasanfernando.es\\backups\\fase-1-20261124-190016\\archivos-originales\\436950 SAN FERNANDO UTE SERROT HERYSAN 2026 ORIGEN CON DRON.mp4",
+      "preview": "migration/media-inventory/previews/video-2-contacto.jpg",
+      "integration_status": "no_incorporado_pendiente_de_autorizacion_expresa"
+    }
+  ],
+  "not_represented": [
+    {
+      "name": "Residencial Hércules — 216 viviendas protegidas",
+      "status": "Ninguno de estos 11 archivos se asigna a esta promoción."
+    }
+  ]
+}
