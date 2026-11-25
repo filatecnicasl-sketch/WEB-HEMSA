@@ -519,8 +519,8 @@ def deliver_form_emails(kind: str, reference: str, name: str, email: str, phone:
 
 
 def next_reference(db, kind: str) -> str:
-    """Número correlativo de registro de entrada: E/2026/000042 o C/2026/000042."""
-    prefix = "E" if kind == "contact" else "C"
+    """Número correlativo de registro de correo electrónico: RCE/2026/00042."""
+    prefix = "RCE"
     year = datetime.now(MADRID_TZ).year
     db.execute(
         "INSERT INTO registry_counters(kind,year,counter) VALUES(?,?,1) "
@@ -528,7 +528,7 @@ def next_reference(db, kind: str) -> str:
         (prefix, year),
     )
     counter = db.execute("SELECT counter FROM registry_counters WHERE kind=? AND year=?", (prefix, year)).fetchone()["counter"]
-    return f"{prefix}/{year}/{counter:06d}"
+    return f"{prefix}/{year}/{counter:05d}"
 
 
 class Store:
