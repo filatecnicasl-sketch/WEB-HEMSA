@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hemsa-san-fernando
+    name: hemsa-frontend
     runtime: docker
     plan: free
     healthCheckPath: /api/health

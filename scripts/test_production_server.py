@@ -76,6 +76,10 @@ def main() -> int:
         status, headers, body = request("/gestor")
         checks.append((status == 200 and b'<div id="root">' in body, "las rutas internas cargan la aplicación"))
 
+        for legacy_route in ("/login", "/admin", "/registro-demandantes"):
+            status, headers, body = request(legacy_route)
+            checks.append((status == 200 and b'<div id="root">' in body, f"la ruta antigua {legacy_route} sigue funcionando"))
+
         status, headers, body = request("/api/health")
         checks.append((status == 200 and json.loads(body) == {"status": "ok"}, "la API responde correctamente"))
 

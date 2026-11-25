@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -51,6 +51,9 @@ export default function App() {
         <Route path="propuesta-2" element={<DesignTwo />} />
         <Route path="propuesta-3" element={<DesignThree />} />
         <Route path="propuesta-4" element={<DesignFour />} />
+        <Route path="registro-demandantes" element={<Navigate to="/vivienda/registro" replace />} />
+        <Route path="login" element={<Navigate to="/vivienda/registro" replace />} />
+        <Route path="admin" element={<Navigate to="/vivienda/registro" replace />} />
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="sobre-nosotros" element={<About />} />

@@ -8,8 +8,7 @@ import { Link } from 'react-router-dom';
 import { ExternalAnchor, PageHero, SectionHeading } from '../components/UI';
 import { useSite } from '../context/SiteContext';
 
-const registryUrl = 'https://hemsa-frontend.onrender.com/login';
-const registryInfoUrl = 'https://hemsa-frontend.onrender.com/';
+const appointmentUrl = '/cita-previa';
 const applicationUrl = '/documents/vivienda/solicitud-de-inscripcion-registro-de-demandantes-2024-hemsa.pdf';
 const ordinanceUrl = '/documents/vivienda/ordenanza-modificada-segun-sugerencias-consejeria.pdf';
 
@@ -144,9 +143,9 @@ export default function HousingRegistry() {
         text="Toda la información para inscribirte, actualizar tus datos y mantener activa tu solicitud. Un trámite claro, con atención municipal cercana cuando lo necesites."
       >
         <div className="registry-hero-actions">
-          <ExternalAnchor href={registryUrl} className="button">
-            Acceder al Registro<ArrowUpRight size={18} />
-          </ExternalAnchor>
+          <Link to={appointmentUrl} className="button">
+            Pedir cita para inscribirme<ArrowUpRight size={18} />
+          </Link>
           <ExternalAnchor href={applicationUrl} className="button button-secondary" download>
             <Download size={18} />Descargar solicitud
           </ExternalAnchor>
@@ -170,16 +169,16 @@ export default function HousingRegistry() {
                 Consultar la ordenanza municipal<ArrowUpRight size={15} />
               </a>
             </div>
-            <aside className="registry-online-card" aria-label="Acceso a la plataforma online">
-              <span className="registry-online-label"><span />Plataforma online</span>
+            <aside className="registry-online-card" aria-label="Ayuda con la inscripción">
+              <span className="registry-online-label"><span />Trámite municipal</span>
               <ClipboardCheck size={35} />
-              <h3>Gestiona tu inscripción desde casa</h3>
-              <p>Accede a la plataforma municipal para informarte, inscribirte y mantener actualizados tus datos.</p>
-              <ExternalAnchor href={registryUrl} className="button button-white">
-                Acceso ciudadano<ArrowUpRight size={17} />
-              </ExternalAnchor>
-              <ExternalAnchor href={registryInfoUrl} className="registry-platform-link">
-                Ver la página de información del Registro
+              <h3>Te ayudamos con tu inscripción</h3>
+              <p>Descarga la solicitud, prepara la documentación y pide cita para revisarla con el personal de HEMSA.</p>
+              <Link to={appointmentUrl} className="button button-white">
+                Pedir cita previa<ArrowUpRight size={17} />
+              </Link>
+              <ExternalAnchor href={ordinanceUrl} className="registry-platform-link">
+                Consultar la ordenanza del Registro
               </ExternalAnchor>
             </aside>
           </div>
@@ -235,7 +234,7 @@ export default function HousingRegistry() {
             ))}
           </ol>
           <div className="registry-process-actions">
-            <ExternalAnchor href={registryUrl} className="button">Empezar en la plataforma<ArrowUpRight size={17} /></ExternalAnchor>
+            <Link to={appointmentUrl} className="button">Pedir cita previa<ArrowUpRight size={17} /></Link>
             <ExternalAnchor href={applicationUrl} className="button button-secondary" download><Download size={17} />Descargar el modelo oficial</ExternalAnchor>
           </div>
         </div>
@@ -271,7 +270,7 @@ export default function HousingRegistry() {
             <span className="eyebrow light">Muy importante</span>
             <h2 id="registry-renewal-title">No dejes caducar tu inscripción</h2>
             <p>Si no renuevas dentro del plazo, la inscripción puede cancelarse. Guarda un recordatorio y revisa que tu correo y teléfono sean correctos.</p>
-            <ExternalAnchor href={registryUrl} className="button button-white">Revisar mis datos<ArrowUpRight size={17} /></ExternalAnchor>
+            <Link to={appointmentUrl} className="button button-white">Pedir cita para revisar mis datos<ArrowUpRight size={17} /></Link>
           </div>
           <div className="registry-renewal-points">
             <article><RefreshCw size={22} /><div><h3>Renueva cada tres años</h3><p>Puedes solicitar la renovación durante los tres meses anteriores a la finalización de la vigencia.</p></div></article>
